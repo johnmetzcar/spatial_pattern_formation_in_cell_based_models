@@ -75,9 +75,11 @@ void tumor_cell_phenotype_with_oncoprotein( Cell* pCell, Phenotype& phenotype, d
 
 // any additional cell types (beyond cell_defaults)
 
-extern Cell_Definition motile_cell; 
+extern Cell_Definition A_cell; 
+extern Cell_Definition B_cell; 
 
 // custom cell phenotype functions could go here 
+void phenotype_update( Cell* pCell, Phenotype& phenotype, double dt );
 
 // setup functions to help us along 
 

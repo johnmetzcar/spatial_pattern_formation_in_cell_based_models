@@ -102,7 +102,6 @@ int main( int argc, char* argv[] )
 	std::string time_units = "min"; 
 
 	/* Microenvironment setup */ 
-	
 	setup_microenvironment(); // modify this in the custom code 
 	
 	/* PhysiCell setup */ 
