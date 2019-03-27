@@ -113,10 +113,8 @@ void create_cell_types( void )
 	// first find index for a few key variables. 
 	int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
 	int necrosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Necrosis" );
-	int oxygen_substrate_index = microenvironment.find_density_index( "oxygen" ); 
-
-	//int G0G1_index = Ki67_advanced.find_phase_index( PhysiCell_constants::G0G1_phase );
-	//int S_index = Ki67_advanced.find_phase_index( PhysiCell_constants::S_phase );
+	int nCycle_start = live.find_phase_index( PhysiCell_constants::live );
+	int nCycle_end = live.find_phase_index( PhysiCell_constants::live );
 
 	// initially no necrosis 
 	cell_defaults.phenotype.death.rates[necrosis_model_index] = 0.0; 
@@ -148,7 +146,7 @@ void create_cell_types( void )
 	//A_cell.phenotype.mechanics.cell_cell_adhesion_strength *= parameters.doubles( "motile_cell_relative_adhesion" ); // 0.05; 
 	
 	// Phenotype update
-	A_cell.functions.update_phenotype = phenotype_update; 
+	A_cell.functions.update_phenotype = NULL; 
 
 	// Set rates
 	A_cell.functions.cycle_model.transition_rate(0,0) = 1.0 / parameters.doubles("a_cell_divide_time"); // update transition time
@@ -163,11 +161,41 @@ void create_cell_types( void )
 	A_cell.phenotype.secretion.secretion_rates[1] = 1 / parameters.doubles("a_cell_beta_secretion_rate"); 
 	A_cell.phenotype.secretion.saturation_densities[1] = parameters.doubles("a_cell_beta_saturation_density"); 
 
-	return; 
-}
+	/*** B Type Cells ***/
 
-void phenotype_update( Cell* pCell, Phenotype& phenotype, double dt ) {
-	return;
+	B_cell = cell_defaults; 
+	B_cell.type = 1; 
+	B_cell.name = "B Type Cell"; 
+
+	// make sure the new cell type has its own reference phenotype
+	B_cell.parameters.pReference_live_phenotype = &( B_cell.phenotype ); 
+	
+	// enable random motility 
+	B_cell.phenotype.motility.is_motile = true; 
+	B_cell.phenotype.motility.persistence_time = parameters.doubles( "b_cell_persistence_time" ); // 15.0; 
+	B_cell.phenotype.motility.migration_speed = parameters.doubles( "b_cell_migration_speed" ); // 0.25 micron/minute 
+	B_cell.phenotype.motility.migration_bias = parameters.doubles( "b_cell_migration_bias" );// completely random 
+	
+	// Set cell-cell adhesion to 5% of other cells 
+	//A_cell.phenotype.mechanics.cell_cell_adhesion_strength *= parameters.doubles( "motile_cell_relative_adhesion" ); // 0.05; 
+	
+	// Phenotype update
+	B_cell.functions.update_phenotype = NULL; 
+
+	// Set rates
+	B_cell.functions.cycle_model.transition_rate(0,0) = 1.0 / parameters.doubles("b_cell_divide_time"); // update transition time
+	B_cell.phenotype.death.rates[apoptosis_model_index] = parameters.doubles( "b_cell_apoptosis_rate" ); // 0.0; 
+	
+	// Secret and uptake rates
+	// Change secretion/uptake
+	B_cell.phenotype.secretion.uptake_rates[0] = parameters.doubles("b_cell_alpha_uptake_rate"); 
+	B_cell.phenotype.secretion.secretion_rates[0] = 1 / parameters.doubles("b_cell_alpha_secretion_rate"); 
+	B_cell.phenotype.secretion.saturation_densities[0] = parameters.doubles("b_cell_alpha_saturation_density"); 
+	B_cell.phenotype.secretion.uptake_rates[1] = parameters.doubles("b_cell_beta_uptake_rate"); 
+	B_cell.phenotype.secretion.secretion_rates[1] = 1 / parameters.doubles("b_cell_beta_secretion_rate"); 
+	B_cell.phenotype.secretion.saturation_densities[1] = parameters.doubles("b_cell_beta_saturation_density"); 
+
+	return; 
 }
 
 void setup_microenvironment( void )
@@ -212,8 +240,25 @@ void setup_microenvironment( void )
 void setup_tissue( void )
 {
 	Cell* pC;	
-	pC = create_cell( A_cell ); 
-	pC->assign_position( 15.0, -18.0, 0.0 );
+	std::vector<double> position = {0,0,0}; 
+
+	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min")+abs(parameters.doubles("cell_x_max")) / 2));
+		
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min")+abs(parameters.doubles("cell_y_max")) / 2));
+
+		pC = create_cell(A_cell); 
+		pC->assign_position( position ); 
+	}
+
+	for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min")+abs(parameters.doubles("cell_x_max")) / 2));
+		
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min")+abs(parameters.doubles("cell_y_max")) / 2));
+
+		pC = create_cell(B_cell); 
+		pC->assign_position( position ); 
+	}
 	
 	return; 
 }
