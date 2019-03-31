@@ -89,3 +89,4 @@ void setup_microenvironment( void );
 // custom pathology coloring function 
 
 std::vector<std::string> my_coloring_function( Cell* );
+void alpha_and_beta_based_proliferation(Cell* pCell, Phenotype& phenotype, double dt);
