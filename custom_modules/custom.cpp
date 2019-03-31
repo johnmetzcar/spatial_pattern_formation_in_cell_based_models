@@ -139,9 +139,9 @@ void create_cell_types( void )
 	
 	// enable random motility 
 	A_cell.phenotype.motility.is_motile = true; 
-	A_cell.phenotype.motility.persistence_time = parameters.doubles( "a_cell_persistence_time" ); // 15.0; 
-	A_cell.phenotype.motility.migration_speed = parameters.doubles( "a_cell_migration_speed" ); // 0.25 micron/minute 
-	A_cell.phenotype.motility.migration_bias = parameters.doubles( "a_cell_migration_bias" );// completely random 
+	A_cell.phenotype.motility.persistence_time = parameters.doubles( "a_cell_persistence_time" ); 
+	A_cell.phenotype.motility.migration_speed = parameters.doubles( "a_cell_migration_speed" ); 
+	A_cell.phenotype.motility.migration_bias = parameters.doubles( "a_cell_migration_bias" );
 	
 	// Set cell-cell adhesion to 5% of other cells 
 	//A_cell.phenotype.mechanics.cell_cell_adhesion_strength *= parameters.doubles( "motile_cell_relative_adhesion" ); // 0.05; 
@@ -150,16 +150,16 @@ void create_cell_types( void )
 	A_cell.functions.update_phenotype =  alpha_and_beta_based_proliferation; //NULL; 
 
 	// Set proliferation and death rates
-	A_cell.functions.cycle_model.transition_rate(0,0) = 1.0 / parameters.doubles("a_cell_divide_time"); // 1/mean time to cycle
+	A_cell.phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time"); // 1/mean time to cycle
 	A_cell.phenotype.death.rates[apoptosis_model_index] = parameters.doubles( "a_cell_apoptosis_rate" );
 	
 	// Secret and uptake rates
 	// Change secretion/uptake
 	A_cell.phenotype.secretion.uptake_rates[0] = parameters.doubles("a_cell_alpha_uptake_rate"); 
-	A_cell.phenotype.secretion.secretion_rates[0] = 1 / parameters.doubles("a_cell_alpha_secretion_rate"); 
+	A_cell.phenotype.secretion.secretion_rates[0] = parameters.doubles("a_cell_alpha_secretion_rate"); 
 	A_cell.phenotype.secretion.saturation_densities[0] = parameters.doubles("a_cell_alpha_saturation_density"); 
 	A_cell.phenotype.secretion.uptake_rates[1] = parameters.doubles("a_cell_beta_uptake_rate"); 
-	A_cell.phenotype.secretion.secretion_rates[1] = 1 / parameters.doubles("a_cell_beta_secretion_rate"); 
+	A_cell.phenotype.secretion.secretion_rates[1] = parameters.doubles("a_cell_beta_secretion_rate"); 
 	A_cell.phenotype.secretion.saturation_densities[1] = parameters.doubles("a_cell_beta_saturation_density"); 
 
 	/*** B Type Cells ***/
@@ -173,9 +173,9 @@ void create_cell_types( void )
 	
 	// enable random motility 
 	B_cell.phenotype.motility.is_motile = true; 
-	B_cell.phenotype.motility.persistence_time = parameters.doubles( "b_cell_persistence_time" ); // 15.0; 
-	B_cell.phenotype.motility.migration_speed = parameters.doubles( "b_cell_migration_speed" ); // 0.25 micron/minute 
-	B_cell.phenotype.motility.migration_bias = parameters.doubles( "b_cell_migration_bias" );// completely random 
+	B_cell.phenotype.motility.persistence_time = parameters.doubles( "b_cell_persistence_time" ); 
+	B_cell.phenotype.motility.migration_speed = parameters.doubles( "b_cell_migration_speed" ); 
+	B_cell.phenotype.motility.migration_bias = parameters.doubles( "b_cell_migration_bias" );
 	
 	// Set cell-cell adhesion to 5% of other cells 
 	//A_cell.phenotype.mechanics.cell_cell_adhesion_strength *= parameters.doubles( "motile_cell_relative_adhesion" ); // 0.05; 
@@ -184,16 +184,16 @@ void create_cell_types( void )
 	B_cell.functions.update_phenotype = alpha_and_beta_based_proliferation; //NULL; 
 
 	// Set proliferation and death rates
-	B_cell.functions.cycle_model.transition_rate(0,0) = 1.0 / parameters.doubles("b_cell_divide_time"); // 1/mean time to cycle
+	B_cell.phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time"); // 1/mean time to cycle
 	B_cell.phenotype.death.rates[apoptosis_model_index] = parameters.doubles( "b_cell_apoptosis_rate" ); 
 	
 	// Secret and uptake rates
 	// Change secretion/uptake
 	B_cell.phenotype.secretion.uptake_rates[0] = parameters.doubles("b_cell_alpha_uptake_rate"); 
-	B_cell.phenotype.secretion.secretion_rates[0] = 1 / parameters.doubles("b_cell_alpha_secretion_rate"); 
+	B_cell.phenotype.secretion.secretion_rates[0] = parameters.doubles("b_cell_alpha_secretion_rate"); 
 	B_cell.phenotype.secretion.saturation_densities[0] = parameters.doubles("b_cell_alpha_saturation_density"); 
 	B_cell.phenotype.secretion.uptake_rates[1] = parameters.doubles("b_cell_beta_uptake_rate"); 
-	B_cell.phenotype.secretion.secretion_rates[1] = 1 / parameters.doubles("b_cell_beta_secretion_rate"); 
+	B_cell.phenotype.secretion.secretion_rates[1] = parameters.doubles("b_cell_beta_secretion_rate"); 
 	B_cell.phenotype.secretion.saturation_densities[1] = parameters.doubles("b_cell_beta_saturation_density"); 
 
 	return; 
@@ -264,7 +264,7 @@ void setup_tissue( void )
 	return; 
 }
 
-std::vector<std::string> my_coloring_function( Cell* pCell )
+std::vector<std::string> my_coloring_function( Cell* pCell ) // A-alpha cells are blue and B-beta cells are yellow. Alpha cells are the inhibitors. 
 {
 	std::vector<std::string> output {"", "", "", ""};
 	if(pCell->type == 0) {
@@ -273,7 +273,7 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 			output[2] = "black";
 		}
 		else {
-			output[0] = "blue";
+			output[0] = "blue"; 
 			output[2] = "blue";
 		}
 	}
@@ -299,15 +299,27 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, double dt)
 {
 
-	// static int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
+	static int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
 	// static int necrosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Necrosis" );
 
-	// std::cout<<"current_phase_index = "<<phenotype.cycle.current_phase_index() <<std::endl<<std::endl;
+	// std::cout<<"current_phase_index = "<<phenotype.cycle.data.transition_rate(0,0) <<std::endl<<std::endl;
 	// std::cout<<"Apo = "<<phenotype.death.rates[apoptosis_model_index]<<std::endl<<std::endl;
 	// std::cout<<"Nec = "<<phenotype.death.rates[necrosis_model_index]<<std::endl<<std::endl;
 	// std::cout<<"Volume = "<<phenotype.volume.total <<std::endl<<std::endl;
-	// std::cout<<phenotype.cycle.data.current_phase_index <<std::endl<<std::endl;
+	// std::cout<<"Is motile "<<phenotype.motility.is_motile <<std::endl<<std::endl;
+	// std::cout<<"Speed ="<<phenotype.motility.migration_speed <<std::endl<<std::endl;
 	// std::cout<<phenotype.cycle. <<std::endl;
+
+	static int alpha_subsubstrate_index = microenvironment.find_density_index("alpha");
+	static int beta_subsubstrate_index = microenvironment.find_density_index("beta");
+	// static int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
+    
+    double alpha_conc = pCell->nearest_density_vector()[alpha_subsubstrate_index];
+
+	if(pCell->type == 1)
+	{
+		phenotype.death.rates[apoptosis_model_index] = alpha_conc;
+	}
 
 
 

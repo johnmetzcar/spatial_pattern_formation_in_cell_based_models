@@ -35,3 +35,8 @@
 *.mat
 project2D
 output/*.xml
+project2D
+
+.vscode/
+project2D
+project2D
