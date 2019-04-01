@@ -226,7 +226,7 @@ void setup_microenvironment( void )
 	default_microenvironment_options.outer_Dirichlet_conditions = false;
 	
 	
-	std::vector<double> bc_vector = {100, 100}; // Initial values of alpha and beta
+	std::vector<double> bc_vector = {0, 0}; // Initial values of alpha and beta
 	default_microenvironment_options.Dirichlet_condition_vector = bc_vector;
 
 	std::vector<bool> bc_activation_vector( 2, false ); 
@@ -244,18 +244,18 @@ void setup_tissue( void )
 	std::vector<double> position = {0,0,0}; 
 
 	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min")+abs(parameters.doubles("cell_x_max")) / 2));
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")) / 2);
 		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min")+abs(parameters.doubles("cell_y_max")) / 2));
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")) / 2);
 
 		pC = create_cell(A_cell); 
 		pC->assign_position( position ); 
 	}
 
 	for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min")+abs(parameters.doubles("cell_x_max")) / 2));
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")) / 2);
 		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min")+abs(parameters.doubles("cell_y_max")) / 2));
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")) / 2);
 
 		pC = create_cell(B_cell); 
 		pC->assign_position( position ); 
@@ -318,8 +318,18 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 
 	if(pCell->type == 1)
 	{
-		phenotype.death.rates[apoptosis_model_index] = alpha_conc;
+		phenotype.death.rates[apoptosis_model_index] = alpha_conc * parameters.doubles("b_cell_motility_scale") * parameters.doubles("b_cell_apoptosis_scale");
+
+		// Motility speed changing
+		phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
 	}
+
+	if(pCell->type == 0) {
+		// Motility speed changing
+		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
+	}
+
+
 
 
 
