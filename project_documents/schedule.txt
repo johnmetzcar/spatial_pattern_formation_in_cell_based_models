@@ -1,0 +1,41 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage[letterpaper,margin=0.5in]{geometry}
+\usepackage{amssymb}
+\usepackage[super,numbers,sort&compress]{natbib}
+\usepackage{outlines}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{authblk}
+
+\renewcommand{\vec}[1]{\mathrm{#1}}
+
+\begin{document}
+
+\title{Progress Report 1 - Objectives and Miles Stones}
+\author[1]{Ben Duggan and John Metzcar}
+\affil[1]{Team 1}
+\date{\today}
+
+\maketitle
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ l|X|X|l }
+    \hline
+    \textbf{Week} & \textbf{Objective} & \textbf{Deliverable}  & \textbf{Due date}\\ \hline
+    Week 0 & Set goals and read Ch. 2 $($\url{http://pcleon.if.ufrgs.br/pub/listas-sistdin/MurrayII.pdf}$)$ & Formally (in writing) declare team members, team ID, project goals and desired final output & 03.25.19 \\ \hline
+    Week 1 & Make model  & Standard project report (see notes) & 04.01.19 \\ \hline
+    Week 2 & Explore model and produce preliminary results & Standard project report (see notes) & 04.08.19 \\ \hline
+    Week 3 & Write up results and discussion  & Preliminary results presentation (see notes) & 04.15.19 \\ \hline
+    Week 4 & Write slides, produce handout (full presentation supplement) and Nanohub testing  & Slides, handout, and working Nanohub tool & 04.22.19 \\ \hline
+    Week 5 & Presentation & Give presentation  & 04.22/24.19 \\ \hline
+    Week 6 & Turn in materials  & Uploaded codes, slides, evaluation, etc (see notes) & 05.01.19\\ \hline
+\end{tabularx}
+\end{center}
+
+\noindent \textbf{Project goal}: Form Turing like pattern of stripes and/or dots of two different cell types using density signaling chemical (``quorum sensing") and two randomly motile cell types.
+
+
+\end{document}

@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper,margin=0.5in]{geometry}
+
+\title{Weekly progress report}
+\author{Ben Duggan and John Metzccar }
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0cm}
+
+% \section{Weekly progress report (group or individual)}
+
+% Date: \today
+\\
+1. Goals for the prior week: 
+\\
+Produce a working simulation that captures or is capable of capturing
+specifications as outlined in the  CBM Turing pattern specification.
+\\
+\\
+\\
+2. Progress towards last week's goals:
+\\
+Accomplished above goal.
+\\
+\\
+\\
+3. Obstacles or surprises:
+\\
+Navigating custom cell function specification versus accessing premade cell cycle functions.
+\\
+Separate code development leading to temporary misunderstandings.
+\\
+\\
+4. Potential solutions to obstacles:
+\\
+Experience with PC.
+
+More careful reading of the code.
+\\
+\\
+\\
+5. Next week's goals:
+\\
+Tweak model parameters of functions, such as rates of inhibition, apoptosis, motility and proliferation, to produce spotted Turing like pattern.
+\\
+\\
+\\
+6. Any necessary changes in project definition:
+\\
+Could also have $\alpha$ and $\beta$ fields change motility (speed), proliferation or all three instead of just apoptotic rate.
+
+\end{document}
