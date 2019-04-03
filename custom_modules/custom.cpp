@@ -244,18 +244,18 @@ void setup_tissue( void )
 	std::vector<double> position = {0,0,0}; 
 
 	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")) / 2);
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
 		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")) / 2);
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
 
 		pC = create_cell(A_cell); 
 		pC->assign_position( position ); 
 	}
 
 	for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")) / 2);
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
 		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")) / 2);
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
 
 		pC = create_cell(B_cell); 
 		pC->assign_position( position ); 
@@ -321,12 +321,15 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		phenotype.death.rates[apoptosis_model_index] = alpha_conc * parameters.doubles("b_cell_motility_scale") * parameters.doubles("b_cell_apoptosis_scale");
 
 		// Motility speed changing
-		phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
+		//phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
+		phenotype.motility.migration_speed = 0.5 * (alpha_conc / (1-alpha_conc));
+		//phenotype.motility.migration_speed = 1 / ( 1 + exp(-1 * (alpha_conc - .5)));
 	}
 
 	if(pCell->type == 0) {
 		// Motility speed changing
-		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
+		//phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
+		phenotype.motility.migration_speed = 0.5 - 0.5*(alpha_conc / (1-alpha_conc));
 	}
 
 

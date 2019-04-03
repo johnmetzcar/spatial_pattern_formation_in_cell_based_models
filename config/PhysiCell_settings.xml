@@ -74,10 +74,10 @@
 
 <PhysiCell_settings version="devel-version">
 	<domain>
-		<x_min>-500</x_min>
-		<x_max>500</x_max>
-		<y_min>-500</y_min>
-		<y_max>500</y_max>
+		<x_min>-250</x_min>
+		<x_max>250</x_max>
+		<y_min>-250</y_min>
+		<y_max>250</y_max>
 		<z_min>-10</z_min>
 		<z_max>10</z_max>
 		<dx>20</dx>
@@ -132,7 +132,7 @@
 
 		<a_cell_migration_bias type="double" units="dimensionless">0</a_cell_migration_bias>
 		
-		<a_cell_divide_time type="double" units="1/min">.0001</a_cell_divide_time>
+		<a_cell_divide_time type="double" units="1/min">0</a_cell_divide_time>
 		
 		<a_cell_apoptosis_rate type="double" units="1/min">0</a_cell_apoptosis_rate>
 		
@@ -154,7 +154,7 @@
 		<b_cell_persistence_time type="double" units="dimensionless">5</b_cell_persistence_time>
 		<b_cell_migration_speed type="double" units="dimensionless">0.25</b_cell_migration_speed>
 		<b_cell_migration_bias type="double" units="dimensionless">0</b_cell_migration_bias>
-		<b_cell_divide_time type="double" units="dimensionless">.0001</b_cell_divide_time>
+		<b_cell_divide_time type="double" units="dimensionless">0</b_cell_divide_time>
 		<b_cell_apoptosis_rate type="double" units="dimensionless">0</b_cell_apoptosis_rate>
 		<b_cell_alpha_uptake_rate type="double" units="dimensionless">0</b_cell_alpha_uptake_rate>
 		<b_cell_alpha_secretion_rate type="double" units="dimensionless">0</b_cell_alpha_secretion_rate>
@@ -163,15 +163,15 @@
 		<b_cell_beta_secretion_rate type="double" units="dimensionless">5</b_cell_beta_secretion_rate>
 		<b_cell_beta_saturation_density type="double" units="dimensionless">1</b_cell_beta_saturation_density>
 		<b_cell_apoptosis_scale type="double" units="dimensionless">0</b_cell_apoptosis_scale>
-		<b_cell_motility_scale type="double" units="dimensionless">100</b_cell_motility_scale>
+		<b_cell_motility_scale type="double" units="dimensionless">10</b_cell_motility_scale>
 
 		<!-- Cell Placement -->
-		<a_number_of_cells type="double" units="number">30</a_number_of_cells>
-		<b_number_of_cells type="double" units="number">30</b_number_of_cells>
-		<cell_x_min type="double" units="dimensionless">-500</cell_x_min>
-		<cell_x_max type="double" units="dimensionless">500</cell_x_max>
-		<cell_y_min type="double" units="dimensionless">-500</cell_y_min>
-		<cell_y_max type="double" units="dimensionless">500</cell_y_max>
+		<a_number_of_cells type="double" units="number">750</a_number_of_cells>
+		<b_number_of_cells type="double" units="number">250</b_number_of_cells>
+		<cell_x_min type="double" units="dimensionless">-250</cell_x_min>
+		<cell_x_max type="double" units="dimensionless">250</cell_x_max>
+		<cell_y_min type="double" units="dimensionless">-250</cell_y_min>
+		<cell_y_max type="double" units="dimensionless">250</cell_y_max>
 		
 	</user_parameters>
 	
