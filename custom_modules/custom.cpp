@@ -243,24 +243,107 @@ void setup_tissue( void )
 	Cell* pC;	
 	std::vector<double> position = {0,0,0}; 
 
-	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
+	// for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
+	// 	position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
 		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
+	// 	position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
 
-		pC = create_cell(A_cell); 
-		pC->assign_position( position ); 
-	}
+	// 	pC = create_cell(A_cell); 
+	// 	pC->assign_position( position ); 
+	// }
 
-	for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
+	// for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
+	// 	position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
 		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
+	// 	position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
 
-		pC = create_cell(B_cell); 
-		pC->assign_position( position ); 
-	}
+	// 	pC = create_cell(B_cell); 
+	// 	pC->assign_position( position ); 
+	// }
 	
+	// place a cluster of tumor cells at the center 
+	
+	double cell_radius = cell_defaults.phenotype.geometry.radius; 
+	double cell_spacing = 0.95 * 2.0 * cell_radius; 
+	
+	double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
+	
+	// Parameter<double> temp; 
+	
+	std::cout << parameters << std::endl; 
+	int i = parameters.doubles.find_index( "tumor_radius" ); 
+	
+	// Cell* pCell = NULL; 
+	
+	double x = 0.0; 
+	double x_outer = tumor_radius; 
+	double y = 0.0; 
+	
+	double p_mean = parameters.doubles( "oncoprotein_mean" ); 
+	double p_sd = parameters.doubles( "oncoprotein_sd" ); 
+	double p_min = parameters.doubles( "oncoprotein_min" ); 
+	double p_max = parameters.doubles( "oncoprotein_max" ); 
+	
+	int n = 0; 
+	while( y < tumor_radius )
+	{
+		x = 0.0; 
+		if( n % 2 == 1 )
+		{ x = 0.5*cell_spacing; }
+		x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
+		
+		while( x < x_outer )
+		{
+			pCell = create_cell(); // tumor cell 
+			pCell->assign_position( x , y , 0.0 );
+			pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
+			if( pCell->custom_data[0] < p_min )
+			{ pCell->custom_data[0] = p_min; }
+			if( pCell->custom_data[0] > p_max )
+			{ pCell->custom_data[0] = p_max; }
+			
+			if( fabs( y ) > 0.01 )
+			{
+				pCell = create_cell(); // tumor cell 
+				pCell->assign_position( x , -y , 0.0 );
+				pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
+				if( pCell->custom_data[0] < p_min )
+				{ pCell->custom_data[0] = p_min; }
+				if( pCell->custom_data[0] > p_max )
+				{ pCell->custom_data[0] = p_max; }				
+			}
+			
+			if( fabs( x ) > 0.01 )
+			{ 
+				pCell = create_cell(); // tumor cell 
+				pCell->assign_position( -x , y , 0.0 );
+				pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
+				if( pCell->custom_data[0] < p_min )
+				{ pCell->custom_data[0] = p_min; }
+				if( pCell->custom_data[0] > p_max )
+				{ pCell->custom_data[0] = p_max; }
+		
+				if( fabs( y ) > 0.01 )
+				{
+					pCell = create_cell(); // tumor cell 
+					pCell->assign_position( -x , -y , 0.0 );
+					pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
+					if( pCell->custom_data[0] < p_min )
+					{ pCell->custom_data[0] = p_min; }
+					if( pCell->custom_data[0] > p_max )
+					{ pCell->custom_data[0] = p_max; }
+				}
+			}
+			x += cell_spacing; 
+			
+		}
+		
+		y += cell_spacing * sqrt(3.0)/2.0; 
+		n++; 
+	}
+
+
+
 	return; 
 }
 
@@ -316,20 +399,31 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
     
     double alpha_conc = pCell->nearest_density_vector()[alpha_subsubstrate_index];
 
-	if(pCell->type == 1)
+	if(pCell->type == 0) // Blue/inhibitor cell
+	{
+		// Motility speed changing
+		//phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
+		phenotype.motility.migration_speed =  0.5 * (1 -  1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
+																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
+	}
+
+	if(pCell->type == 1) // Yellow/inhibitor cell
 	{
 		phenotype.death.rates[apoptosis_model_index] = alpha_conc * parameters.doubles("b_cell_motility_scale") * parameters.doubles("b_cell_apoptosis_scale");
 
 		// Motility speed changing
 		//phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
-		phenotype.motility.migration_speed = 0.5 * (alpha_conc / (1-alpha_conc));
-		//phenotype.motility.migration_speed = 1 / ( 1 + exp(-1 * (alpha_conc - .5)));
-	}
+		// phenotype.motility.migration_speed = 0.5 * (alpha_conc / (1-alpha_conc));
+		phenotype.motility.migration_speed = 0.5 * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
+		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
+																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 
-	if(pCell->type == 0) {
-		// Motility speed changing
-		//phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
-		phenotype.motility.migration_speed = 0.5 - 0.5*(alpha_conc / (1-alpha_conc));
+		// might need the b field - since a secretes alpha, alpha basically inhibts instelf ... 
+		// Might need slightly fewer agents - they may be too stuck to move
+		// The initialization could be a problem ... () - we could just fill the whole field and randomly assign membership - just like the ECM ... but no circle.
+		// definitley needs to run longer
+	
 	}
 
 

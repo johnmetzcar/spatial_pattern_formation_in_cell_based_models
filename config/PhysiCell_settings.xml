@@ -166,8 +166,8 @@
 		<b_cell_motility_scale type="double" units="dimensionless">10</b_cell_motility_scale>
 
 		<!-- Cell Placement -->
-		<a_number_of_cells type="double" units="number">750</a_number_of_cells>
-		<b_number_of_cells type="double" units="number">250</b_number_of_cells>
+		<a_number_of_cells type="double" units="number">938</a_number_of_cells>
+		<b_number_of_cells type="double" units="number">312</b_number_of_cells>
 		<cell_x_min type="double" units="dimensionless">-250</cell_x_min>
 		<cell_x_max type="double" units="dimensionless">250</cell_x_max>
 		<cell_y_min type="double" units="dimensionless">-250</cell_y_min>
