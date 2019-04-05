@@ -240,100 +240,86 @@ void setup_microenvironment( void )
 
 void setup_tissue( void )
 {
-	Cell* pC;	
+/* 	Cell* pC;	
 	std::vector<double> position = {0,0,0}; 
 
-	// for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
-	// 	position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
+	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
 		
-	// 	position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
 
-	// 	pC = create_cell(A_cell); 
-	// 	pC->assign_position( position ); 
-	// }
+		pC = create_cell(A_cell); 
+		pC->assign_position( position ); 
+	}
 
-	// for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
-	// 	position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
+	for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
+		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
 		
-	// 	position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
+		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
 
-	// 	pC = create_cell(B_cell); 
-	// 	pC->assign_position( position ); 
-	// }
+		pC = create_cell(B_cell); 
+		pC->assign_position( position ); 
+	}
 	
 	// place a cluster of tumor cells at the center 
-	
+ */	
+
+	Cell* pCell;
+
 	double cell_radius = cell_defaults.phenotype.geometry.radius; 
 	double cell_spacing = 0.95 * 2.0 * cell_radius; 
 	
-	double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
+	// double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
 	
 	// Parameter<double> temp; 
 	
 	std::cout << parameters << std::endl; 
-	int i = parameters.doubles.find_index( "tumor_radius" ); 
+	// int i = parameters.doubles.find_index( "tumor_radius" ); 
 	
-	// Cell* pCell = NULL; 
+	// Cell* pCell = NULL; 	
 	
-	double x = 0.0; 
-	double x_outer = tumor_radius; 
-	double y = 0.0; 
-	
-	double p_mean = parameters.doubles( "oncoprotein_mean" ); 
-	double p_sd = parameters.doubles( "oncoprotein_sd" ); 
-	double p_min = parameters.doubles( "oncoprotein_min" ); 
-	double p_max = parameters.doubles( "oncoprotein_max" ); 
+	double x = default_microenvironment_options.X_range[0]+5;
+	double x_max = default_microenvironment_options.X_range[1]-5; 
+	double y = default_microenvironment_options.Y_range[0]+5; 
+	double y_max = default_microenvironment_options.Y_range[1]-5; 
+
+	std::cout<<x<<std::endl;
+	std::cout<<y<<std::endl;
+	std::cout<<x_max<<std::endl;
+	std::cout<<y_max<<std::endl;
+	// double p_mean = parameters.doubles( "oncoprotein_mean" ); 
+	// double p_sd = parameters.doubles( "oncoprotein_sd" ); 
+	// double p_min = parameters.doubles( "oncoprotein_min" ); 
+	// double p_max = parameters.doubles( "oncoprotein_max" ); 
 	
 	int n = 0; 
-	while( y < tumor_radius )
+	while( y < y_max )
 	{
-		x = 0.0; 
+		x =default_microenvironment_options.X_range[0]+5;; 
 		if( n % 2 == 1 )
-		{ x = 0.5*cell_spacing; }
-		x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
+		{ x = x + 0.5*cell_spacing; }
+		// x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
 		
-		while( x < x_outer )
+		double cell_frac_A = 0.5;
+
+		while( x < x_max )
 		{
-			pCell = create_cell(); // tumor cell 
-			pCell->assign_position( x , y , 0.0 );
-			pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
-			if( pCell->custom_data[0] < p_min )
-			{ pCell->custom_data[0] = p_min; }
-			if( pCell->custom_data[0] > p_max )
-			{ pCell->custom_data[0] = p_max; }
-			
-			if( fabs( y ) > 0.01 )
+			if (UniformRandom() < cell_frac_A) 
 			{
-				pCell = create_cell(); // tumor cell 
-				pCell->assign_position( x , -y , 0.0 );
-				pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
-				if( pCell->custom_data[0] < p_min )
-				{ pCell->custom_data[0] = p_min; }
-				if( pCell->custom_data[0] > p_max )
-				{ pCell->custom_data[0] = p_max; }				
+				pCell = create_cell(A_cell);
+				pCell->assign_position( x , y , 0.0 );
+			}
+
+			else 
+			{
+				pCell = create_cell(B_cell);
+				pCell->assign_position( x , y , 0.0 );
 			}
 			
-			if( fabs( x ) > 0.01 )
-			{ 
-				pCell = create_cell(); // tumor cell 
-				pCell->assign_position( -x , y , 0.0 );
-				pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
-				if( pCell->custom_data[0] < p_min )
-				{ pCell->custom_data[0] = p_min; }
-				if( pCell->custom_data[0] > p_max )
-				{ pCell->custom_data[0] = p_max; }
-		
-				if( fabs( y ) > 0.01 )
-				{
-					pCell = create_cell(); // tumor cell 
-					pCell->assign_position( -x , -y , 0.0 );
-					pCell->custom_data[0] = NormalRandom( p_mean, p_sd );
-					if( pCell->custom_data[0] < p_min )
-					{ pCell->custom_data[0] = p_min; }
-					if( pCell->custom_data[0] > p_max )
-					{ pCell->custom_data[0] = p_max; }
-				}
-			}
+
+			// pCell = create_cell(A_cell); // tumor cell 
+			// pCell->assign_position( x , y , 0.0 );
+			std::cout<< x <<std::endl;
 			x += cell_spacing; 
 			
 		}
