@@ -100,12 +100,12 @@
 		<folder>output</folder> <!-- use . for root --> 
 
 		<full_data>
-			<interval units="min">60</interval>
+			<interval units="min">6</interval>
 			<enable>true</enable>
 		</full_data>
 		
 		<SVG>
-			<interval units="min">60</interval>
+			<interval units="min">6</interval>
 			<enable>true</enable>
 		</SVG>
 		
@@ -117,9 +117,9 @@
 	<user_parameters>
 		<random_seed type="int" units="dimensionless">0</random_seed> 
 		<!-- Substrates -->
-		<alpha_diffusion_coefficient type="double" units="um^2/min">1000</alpha_diffusion_coefficient>
+		<alpha_diffusion_coefficient type="double" units="um^2/min">10000</alpha_diffusion_coefficient>
 		
-		<alpha_decay_rate type="double" units="1/min">1.6</alpha_decay_rate>
+		<alpha_decay_rate type="double" units="1/min">.16</alpha_decay_rate>
 
 		<beta_diffusion_coefficient type="double" units="um^2/min">5</beta_diffusion_coefficient>
 		

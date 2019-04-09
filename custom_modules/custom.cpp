@@ -273,7 +273,7 @@ void setup_tissue( void )
 	
 	// Parameter<double> temp; 
 	
-	std::cout << parameters << std::endl; 
+	//std::cout << parameters << std::endl; 
 	// int i = parameters.doubles.find_index( "tumor_radius" ); 
 	
 	// Cell* pCell = NULL; 	
@@ -283,10 +283,10 @@ void setup_tissue( void )
 	double y = default_microenvironment_options.Y_range[0]+5; 
 	double y_max = default_microenvironment_options.Y_range[1]-5; 
 
-	std::cout<<x<<std::endl;
-	std::cout<<y<<std::endl;
-	std::cout<<x_max<<std::endl;
-	std::cout<<y_max<<std::endl;
+	//std::cout<<x<<std::endl;
+	//std::cout<<y<<std::endl;
+	//std::cout<<x_max<<std::endl;
+	//std::cout<<y_max<<std::endl;
 	// double p_mean = parameters.doubles( "oncoprotein_mean" ); 
 	// double p_sd = parameters.doubles( "oncoprotein_sd" ); 
 	// double p_min = parameters.doubles( "oncoprotein_min" ); 
@@ -389,7 +389,7 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 	{
 		// Motility speed changing
 		//phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
-		phenotype.motility.migration_speed =  0.5 * (1 -  1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+		phenotype.motility.migration_speed =  0.5 * pow( (1 -  1 / ( 1 + exp(-10 * (alpha_conc - .5)))), 2);
 		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 	}
@@ -401,7 +401,7 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		// Motility speed changing
 		//phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
 		// phenotype.motility.migration_speed = 0.5 * (alpha_conc / (1-alpha_conc));
-		phenotype.motility.migration_speed = 0.5 * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
+		phenotype.motility.migration_speed = 0.5 * 1 / pow( ( 1 + exp(-10 * (alpha_conc - .5))), 2 );
 		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 
