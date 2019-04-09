@@ -214,10 +214,10 @@ void setup_microenvironment( void )
 
 	microenvironment.set_density(0, "alpha", "dimensionless");
 	microenvironment.diffusion_coefficients[0] = parameters.doubles("alpha_diffusion_coefficient");
-	microenvironment.decay_rates[0] = 1 / parameters.doubles("alpha_decay_rate");
+	microenvironment.decay_rates[0] = parameters.doubles("alpha_decay_rate");
 	microenvironment.add_density("beta", "dimensionless");
 	microenvironment.diffusion_coefficients[microenvironment.find_density_index("beta")] = parameters.doubles("beta_diffusion_coefficient");
-	microenvironment.decay_rates[microenvironment.find_density_index("beta")] = 1 / parameters.doubles("beta_decay_rate");
+	microenvironment.decay_rates[microenvironment.find_density_index("beta")] = parameters.doubles("beta_decay_rate");
 	
 	// no gradients need for this example 
 	default_microenvironment_options.calculate_gradients = false; 
