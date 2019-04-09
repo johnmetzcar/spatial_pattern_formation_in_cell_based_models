@@ -319,7 +319,7 @@ void setup_tissue( void )
 
 			// pCell = create_cell(A_cell); // tumor cell 
 			// pCell->assign_position( x , y , 0.0 );
-			std::cout<< x <<std::endl;
+			//std::cout<< x <<std::endl;
 			x += cell_spacing; 
 			
 		}
@@ -384,24 +384,34 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 	// static int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
     
     double alpha_conc = pCell->nearest_density_vector()[alpha_subsubstrate_index];
+    double beta_conc = pCell->nearest_density_vector()[beta_subsubstrate_index];
 
 	if(pCell->type == 0) // Blue/inhibitor cell
 	{
 		// Motility speed changing
 		//phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
-		phenotype.motility.migration_speed =  0.5 * pow( (1 -  1 / ( 1 + exp(-10 * (alpha_conc - .5)))), 2);
+		//phenotype.motility.migration_speed =  0.5 * pow( (1 -  1 / ( 1 + exp(-10 * (alpha_conc - .5)))), 2);
 		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
+
+		if(beta_conc >= 1) {
+			std::cout << "Concentration break:" << std::endl;
+		}
+
+		// Motility
+		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") * 1 / ( 1 + exp(-10 * (beta_conc - .5)));
+		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * 1 / ( 1 + exp(-10 * (beta_conc - .5)));
+		phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
 	}
 
 	if(pCell->type == 1) // Yellow/inhibitor cell
 	{
-		phenotype.death.rates[apoptosis_model_index] = alpha_conc * parameters.doubles("b_cell_motility_scale") * parameters.doubles("b_cell_apoptosis_scale");
+		///phenotype.death.rates[apoptosis_model_index] = alpha_conc * parameters.doubles("b_cell_motility_scale") * parameters.doubles("b_cell_apoptosis_scale");
 
 		// Motility speed changing
 		//phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
 		// phenotype.motility.migration_speed = 0.5 * (alpha_conc / (1-alpha_conc));
-		phenotype.motility.migration_speed = 0.5 * 1 / pow( ( 1 + exp(-10 * (alpha_conc - .5))), 2 );
+		//phenotype.motility.migration_speed = 0.5 * 1 / pow( ( 1 + exp(-10 * (alpha_conc - .5))), 2 );
 		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 
@@ -409,9 +419,16 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		// Might need slightly fewer agents - they may be too stuck to move
 		// The initialization could be a problem ... () - we could just fill the whole field and randomly assign membership - just like the ECM ... but no circle.
 		// definitley needs to run longer
-	
-	}
 
+		if(alpha_conc >= 1) {
+			std::cout << "Concentration break: " << std::endl;
+		}
+
+		// motility
+		phenotype.motility.migration_speed = parameters.doubles("b_cell_motility_scale") * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
+		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
+		phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+	}
 
 
 
