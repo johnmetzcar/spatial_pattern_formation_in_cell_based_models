@@ -71,6 +71,7 @@
 
 Cell_Definition A_cell; 
 Cell_Definition B_cell; 
+Cell_Definition wall_cell; 
 
 void create_cell_types( void )
 {
@@ -127,11 +128,12 @@ void create_cell_types( void )
 	
 	// add custom data here, if any 
 	
+	int n = 0;
 
 	/*** Type A ***/ 
 	
 	A_cell = cell_defaults; 
-	A_cell.type = 0; 
+	A_cell.type = n; n++; 
 	A_cell.name = "A Type Cell"; 
 
 	// make sure the new cell type has its own reference phenotype
@@ -165,7 +167,7 @@ void create_cell_types( void )
 	/*** B Type Cells ***/
 
 	B_cell = cell_defaults; 
-	B_cell.type = 1; 
+	B_cell.type = n; n++; 
 	B_cell.name = "B Type Cell"; 
 
 	// make sure the new cell type has its own reference phenotype
@@ -195,6 +197,18 @@ void create_cell_types( void )
 	B_cell.phenotype.secretion.uptake_rates[1] = parameters.doubles("b_cell_beta_uptake_rate"); 
 	B_cell.phenotype.secretion.secretion_rates[1] = parameters.doubles("b_cell_beta_secretion_rate"); 
 	B_cell.phenotype.secretion.saturation_densities[1] = parameters.doubles("b_cell_beta_saturation_density"); 
+
+	wall_cell = cell_defaults;
+
+	wall_cell.name = "wall_cell";
+	wall_cell.type = n; n++;
+	
+	int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
+	int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
+	wall_cell.phenotype.cycle.data.transition_rate( cycle_start_index , cycle_end_index ) = 0.0; 
+	wall_cell.phenotype.death.rates[apoptosis_model_index] = 0.0;
+	
+	wall_cell.phenotype.motility.is_motile = false; 
 
 	return; 
 }
@@ -278,10 +292,15 @@ void setup_tissue( void )
 	
 	// Cell* pCell = NULL; 	
 	
-	double x = default_microenvironment_options.X_range[0]+5;
-	double x_max = default_microenvironment_options.X_range[1]-5; 
-	double y = default_microenvironment_options.Y_range[0]+5; 
-	double y_max = default_microenvironment_options.Y_range[1]-5; 
+	double x = default_microenvironment_options.X_range[0]+10;
+	double x_max = default_microenvironment_options.X_range[1]-10; 
+	double y = default_microenvironment_options.Y_range[0]+10; 
+	double y_max = default_microenvironment_options.Y_range[1]-10; 
+
+	// double x = default_microenvironment_options.X_range[0];
+	// double x_max = default_microenvironment_options.X_range[1]; 
+	// double y = default_microenvironment_options.Y_range[0]; 
+	// double y_max = default_microenvironment_options.Y_range[1]; 
 
 	//std::cout<<x<<std::endl;
 	//std::cout<<y<<std::endl;
@@ -295,6 +314,7 @@ void setup_tissue( void )
 	int n = 0; 
 	while( y < y_max )
 	{
+
 		x =default_microenvironment_options.X_range[0]+5;; 
 		if( n % 2 == 1 )
 		{ x = x + 0.5*cell_spacing; }
@@ -302,20 +322,34 @@ void setup_tissue( void )
 		
 		double cell_frac_A = 0.5;
 
+		
+
 		while( x < x_max )
 		{
-			if (UniformRandom() < cell_frac_A) 
+			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
 			{
-				pCell = create_cell(A_cell);
-				pCell->assign_position( x , y , 0.0 );
+
+				pCell = create_cell(wall_cell);
+				pCell->assign_position( x, y, 0.0);
+				pCell->is_movable = false;
+
 			}
 
-			else 
-			{
-				pCell = create_cell(B_cell);
-				pCell->assign_position( x , y , 0.0 );
-			}
 			
+			else
+			{
+				if (UniformRandom() < cell_frac_A) 
+				{
+					pCell = create_cell(A_cell);
+					pCell->assign_position( x , y , 0.0 );
+				}
+
+				else 
+				{
+					pCell = create_cell(B_cell);
+					pCell->assign_position( x , y , 0.0 );
+				}
+			}
 
 			// pCell = create_cell(A_cell); // tumor cell 
 			// pCell->assign_position( x , y , 0.0 );
@@ -357,8 +391,8 @@ std::vector<std::string> my_coloring_function( Cell* pCell ) // A-alpha cells ar
 		}
 	}
 	else {
-		output[0] = "red";
-		output[2] = "red";
+		output[0] = "black";
+		output[2] = "black";
 	}
 
 	

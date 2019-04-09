@@ -117,10 +117,10 @@
 	<user_parameters>
 		<random_seed type="int" units="dimensionless">0</random_seed> 
 		<!-- Substrates -->
-		<alpha_diffusion_coefficient type="double" units="um^2/min">10000</alpha_diffusion_coefficient>
-		<alpha_decay_rate type="double" units="1/min">0.16</alpha_decay_rate>
-		<beta_diffusion_coefficient type="double" units="um^2/min">10000</beta_diffusion_coefficient>
-		<beta_decay_rate type="double" units="1/min">0.16</beta_decay_rate>
+		<alpha_diffusion_coefficient type="double" units="um^2/min">100000</alpha_diffusion_coefficient>
+		<alpha_decay_rate type="double" units="1/min">40.0</alpha_decay_rate>
+		<beta_diffusion_coefficient type="double" units="um^2/min">100000</beta_diffusion_coefficient>
+		<beta_decay_rate type="double" units="1/min">40.0</beta_decay_rate>
 		<!-- A Cell Type -->
 		<a_cell_persistence_time type="double" units="min">5</a_cell_persistence_time>
 		<a_cell_migration_speed type="double" units="um/min">0.5</a_cell_migration_speed>
