@@ -202,13 +202,14 @@ void create_cell_types( void )
 
 	wall_cell.name = "wall_cell";
 	wall_cell.type = n; n++;
-	
 	int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
 	int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
 	wall_cell.phenotype.cycle.data.transition_rate( cycle_start_index , cycle_end_index ) = 0.0; 
 	wall_cell.phenotype.death.rates[apoptosis_model_index] = 0.0;
 	
 	wall_cell.phenotype.motility.is_motile = false; 
+
+	wall_cell.functions.update_phenotype = NULL;
 
 	return; 
 }
