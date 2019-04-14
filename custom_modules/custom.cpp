@@ -281,7 +281,7 @@ void setup_tissue( void )
 	Cell* pCell;
 
 	double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
+	double cell_spacing = parameters.doubles( "cell_spacing" ) * 2.0 * cell_radius; 
 	
 	// double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
 	
@@ -296,20 +296,6 @@ void setup_tissue( void )
 	double x_max = default_microenvironment_options.X_range[1]-10; 
 	double y = default_microenvironment_options.Y_range[0]+10; 
 	double y_max = default_microenvironment_options.Y_range[1]-10; 
-
-	// double x = default_microenvironment_options.X_range[0];
-	// double x_max = default_microenvironment_options.X_range[1]; 
-	// double y = default_microenvironment_options.Y_range[0]; 
-	// double y_max = default_microenvironment_options.Y_range[1]; 
-
-	//std::cout<<x<<std::endl;
-	//std::cout<<y<<std::endl;
-	//std::cout<<x_max<<std::endl;
-	//std::cout<<y_max<<std::endl;
-	// double p_mean = parameters.doubles( "oncoprotein_mean" ); 
-	// double p_sd = parameters.doubles( "oncoprotein_sd" ); 
-	// double p_min = parameters.doubles( "oncoprotein_min" ); 
-	// double p_max = parameters.doubles( "oncoprotein_max" ); 
 	
 	int n = 0; 
 	while( y < y_max )
@@ -320,7 +306,7 @@ void setup_tissue( void )
 		{ x = x + 0.5*cell_spacing; }
 		// x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
 		
-		double cell_frac_A = 0.5;
+		double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
 		
 
