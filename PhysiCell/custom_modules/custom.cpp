@@ -282,84 +282,84 @@ void setup_tissue( void )
 	// place a cluster of tumor cells at the center 
  */	
 
-	// Cell* pCell;
+	Cell* pCell;
 
-	// double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	// double cell_spacing = parameters.doubles( "cell_spacing" ) * 2.0 * cell_radius; 
+	double cell_radius = cell_defaults.phenotype.geometry.radius; 
+	double cell_spacing = parameters.doubles( "cell_spacing" ) * 2.0 * cell_radius; 
 	
-	// // double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
+	// double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
 	
-	// // Parameter<double> temp; 
+	// Parameter<double> temp; 
 	
-	// //std::cout << parameters << std::endl; 
-	// // int i = parameters.doubles.find_index( "tumor_radius" ); 
+	//std::cout << parameters << std::endl; 
+	// int i = parameters.doubles.find_index( "tumor_radius" ); 
 	
-	// // Cell* pCell = NULL; 	
+	// Cell* pCell = NULL; 	
 	
-	// double x = default_microenvironment_options.X_range[0]+10;
-	// double x_max = default_microenvironment_options.X_range[1]-10; 
-	// double y = default_microenvironment_options.Y_range[0]+10; 
-	// double y_max = default_microenvironment_options.Y_range[1]-10; 
+	double x = default_microenvironment_options.X_range[0]+10;
+	double x_max = default_microenvironment_options.X_range[1]-10; 
+	double y = default_microenvironment_options.Y_range[0]+10; 
+	double y_max = default_microenvironment_options.Y_range[1]-10; 
 	
-	// int n = 0; 
-	// while( y < y_max )
-	// {
+	int n = 0; 
+	while( y < y_max )
+	{
 
-	// 	x =default_microenvironment_options.X_range[0]+5;; 
-	// 	if( n % 2 == 1 )
-	// 	{ x = x + 0.5*cell_spacing; }
-	// 	// x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
+		x =default_microenvironment_options.X_range[0]+5;; 
+		if( n % 2 == 1 )
+		{ x = x + 0.5*cell_spacing; }
+		// x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
 		
-	// 	double cell_frac_A = parameters.doubles( "cell_frac_A" );
+		double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
 		
 
-	// 	while( x < x_max )
-	// 	{
-	// 		if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
-	// 		{
+		while( x < x_max )
+		{
+			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
+			{
 
-	// 			pCell = create_cell(wall_cell);
-	// 			pCell->assign_position( x, y, 0.0);
-	// 			pCell->is_movable = false;
+				pCell = create_cell(wall_cell);
+				pCell->assign_position( x, y, 0.0);
+				pCell->is_movable = false;
 
-	// 		}
+			}
 
 			
-	// 		else
-	// 		{
-	// 			if(n%2 == 0) {
-	// 				if (UniformRandom() < cell_frac_A) 
-	// 				{
-	// 					pCell = create_cell(A_cell);
-	// 					pCell->assign_position( x , y , 0.0 );
-	// 				}
+			else
+			{
+				if(n%2 == 0) {
+					if (UniformRandom() < cell_frac_A) 
+					{
+						pCell = create_cell(A_cell);
+						pCell->assign_position( x , y , 0.0 );
+					}
 
-	// 				else 
-	// 				{
-	// 					pCell = create_cell(B_cell);
-	// 					pCell->assign_position( x , y , 0.0 );
-	// 				}
-	// 			}
-	// 		}
+					else 
+					{
+						pCell = create_cell(B_cell);
+						pCell->assign_position( x , y , 0.0 );
+					}
+				}
+			}
 
-	// 		// pCell = create_cell(A_cell); // tumor cell 
-	// 		// pCell->assign_position( x , y , 0.0 );
-	// 		//std::cout<< x <<std::endl;
-	// 		x += cell_spacing; 
+			// pCell = create_cell(A_cell); // tumor cell 
+			// pCell->assign_position( x , y , 0.0 );
+			//std::cout<< x <<std::endl;
+			x += cell_spacing; 
 			
-	// 	}
+		}
 		
-	// 	y += cell_spacing * sqrt(3.0)/2.0; 
-	// 	n++; 
-	// }
+		y += cell_spacing * sqrt(3.0)/2.0; 
+		n++; 
+	}
 
-	draw_cell_wall();
-	draw_stripe(150, A_cell);
-	draw_stripe(50, B_cell);
-	draw_stripe(0, A_cell);
-	draw_stripe(-50, B_cell);
-	draw_stripe(-150, A_cell);
+	// draw_cell_wall();
+	// draw_stripe(150, A_cell);
+	// draw_stripe(50, B_cell);
+	// draw_stripe(0, A_cell);
+	// draw_stripe(-50, B_cell);
+	// draw_stripe(-150, A_cell);
 
 
 
