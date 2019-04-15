@@ -312,8 +312,6 @@ void setup_tissue( void )
 		
 		double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
-		
-
 		while( x < x_max )
 		{
 			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
@@ -325,7 +323,6 @@ void setup_tissue( void )
 
 			}
 
-			
 			else
 			{
 				if(n%2 == 0) {
