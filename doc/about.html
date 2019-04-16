@@ -1,0 +1,57 @@
+<h1 id="spatialpatternformationincellbasedmodels">Spatial Pattern Formation in Cell Based Models</h1>
+
+<p>Exploring spatial pattern formation in cell-based models, starting with Turing patterns in PhysiCell</p>
+
+<p>This <a href="https://github.com/johnmetzcar/spatial_pattern_formation_in_cell_based_models">repo</a> houses the code for the ENRG-E 399/599 final project for Team 1.  Team members: [John Metzcar])(https://github.com/johnmetzcar) and <a href="https://github.com/BenSDuggan">Ben Duggan</a>.  The goal of this project is to create Turing-like patterns using <a href="https://github.com/MathCancer/PhysiCell">PhysiCell</a>.  You can download the code and run it (found in the PhysiCell directory) or run it on (NanoHub)[].</p>
+
+<p>Example simultion of the model:
+<img src="/docs/images/sample.gif" alt="sim results" /></p>
+
+<h2 id="modeldescription">Model Description</h2>
+
+<h3 id="cellagents">Cell agents:</h3>
+
+<p>There are 3 cells in the model: A cells, B cells and Wall cells.</p>
+
+<ul>
+<li>A cells are the inhibitor cells and are <span style="color:blue">blue</span>.
+
+
+<ul>
+<li>Using live cycle model and apoptosis</li>
+
+<li>Motility enabled, persistance time of 5 minutes, migration bias set to 0 (completely random).</li>
+
+<li>Secretes alpha and is effected by beta</li></ul>
+</li>
+
+<li>B cells are the effected by A cells and are <span style="color:yellow">yellow</span>.
+
+
+<ul>
+<li>Using live cycle model and apoptosis</li>
+
+<li>Motility enabled, persistance time of 5 minutes, migration bias set to 0 (completely random).</li>
+
+<li>Secretes beta and is effected by alpha</li></ul>
+</li>
+
+<li>Wall cells are placed along the outside of the domain and prevent cells spilling outside of the domain. <span style="color:black">black</span>.
+
+
+<ul>
+<li>Using live cycle model and apoptosis but both have rates set to 0 (disabeling them)</li>
+
+<li>Motility disabled</li>
+
+<li>Secretes and uptakes nothing</li></ul>
+</li>
+</ul>
+
+<h3 id="chemicalcomponents">Chemical components</h3>
+
+<p>Only alpha and beta chemiclas are used in this simulation (no oxygen).  </p>
+
+<h3 id="domain">Domain</h3>
+
+<p>The domain is initilized to be a 500 um x 500 um with dx=dy=dz=20 um.  The simulations are designed to be run in 2D but could be converted to 3D with ease.  The domain is initiallized with wall cells along the outer perimiter.  The A and B cells are initilized <strong><em>_</em><em>_</em><em>_</em><em>_</em><em>_</em>_</strong>- final initialization here.</p>

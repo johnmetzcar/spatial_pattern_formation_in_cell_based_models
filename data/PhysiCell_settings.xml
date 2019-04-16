@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+###############################################################################
+# If you use PhysiCell in your project, please cite PhysiCell and the version #
+# number, such as below:                                                      #
+#                                                                             #
+# We implemented and solved the model using PhysiCell (Version x.y.z) [1].    #
+#                                                                             #
+# [1] A Ghaffarizadeh, R Heiland, SH Friedman, SM Mumenthaler, and P Macklin, #
+#     PhysiCell: an Open Source Physics-Based Cell Simulator for Multicellu-  #
+#     lar Systems, PLoS Comput. Biol. 14(2): e1005991, 2018                   #
+#     DOI: 10.1371/journal.pcbi.1005991                                       #
+#                                                                             #
+# See VERSION.txt or call get_PhysiCell_version() to get the current version  #
+#     x.y.z. Call display_citations() to get detailed information on all cite-#
+#     able software used in your PhysiCell application.                       #
+#                                                                             #
+# Because PhysiCell extensively uses BioFVM, we suggest you also cite BioFVM  #
+#     as below:                                                               #
+#                                                                             #
+# We implemented and solved the model using PhysiCell (Version x.y.z) [1],    #
+# with BioFVM [2] to solve the transport equations.                           #
+#                                                                             #
+# [1] A Ghaffarizadeh, R Heiland, SH Friedman, SM Mumenthaler, and P Macklin, #
+#     PhysiCell: an Open Source Physics-Based Cell Simulator for Multicellu-  #
+#     lar Systems, PLoS Comput. Biol. 14(2): e1005991, 2018                   #
+#     DOI: 10.1371/journal.pcbi.1005991                                       #
+#                                                                             #
+# [2] A Ghaffarizadeh, SH Friedman, and P Macklin, BioFVM: an efficient para- #
+#     llelized diffusive transport solver for 3-D biological simulations,     #
+#     Bioinformatics 32(8): 1256-8, 2016. DOI: 10.1093/bioinformatics/btv730  #
+#                                                                             #
+###############################################################################
+#                                                                             #
+# BSD 3-Clause License (see https://opensource.org/licenses/BSD-3-Clause)     #
+#                                                                             #
+# Copyright (c) 2015-2018, Paul Macklin and the PhysiCell Project             #
+# All rights reserved.                                                        #
+#                                                                             #
+# Redistribution and use in source and binary forms, with or without          #
+# modification, are permitted provided that the following conditions are met: #
+#                                                                             #
+# 1. Redistributions of source code must retain the above copyright notice,   #
+# this list of conditions and the following disclaimer.                       #
+#                                                                             #
+# 2. Redistributions in binary form must reproduce the above copyright        #
+# notice, this list of conditions and the following disclaimer in the         #
+# documentation and/or other materials provided with the distribution.        #
+#                                                                             #
+# 3. Neither the name of the copyright holder nor the names of its            #
+# contributors may be used to endorse or promote products derived from this   #
+# software without specific prior written permission.                         #
+#                                                                             #
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" #
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE   #
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE  #
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE   #
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR         #
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF        #
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS    #
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN     #
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)     #
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE  #
+# POSSIBILITY OF SUCH DAMAGE.                                                 #
+#                                                                             #
+###############################################################################
+*/
+--> 
+
+<!--
+<user_details />
+-->
+
+<PhysiCell_settings version="devel-version">
+	<domain>
+		<x_min>-250</x_min>
+		<x_max>250</x_max>
+		<y_min>-250</y_min>
+		<y_max>250</y_max>
+		<z_min>-10</z_min>
+		<z_max>10</z_max>
+		<dx>20</dx>
+		<dy>20</dy>
+		<dz>20</dz>
+		<use_2D>true</use_2D>
+	</domain>
+	
+	<overall>
+		<max_time units="min">86400</max_time> <!-- 5 days * 24 h * 60 min -->
+		<time_units>min</time_units>
+		<space_units>micron</space_units>
+	</overall>
+	
+	<parallel>
+		<omp_num_threads>4</omp_num_threads>
+	</parallel> 
+	
+	<save>
+		<folder>.</folder> <!-- use . for root --> 
+
+		<full_data>
+			<interval units="min">240</interval>
+			<enable>true</enable>
+		</full_data>
+		
+		<SVG>
+			<interval units="min">240</interval>
+			<enable>true</enable>
+		</SVG>
+		
+		<legacy_data>
+			<enable>false</enable>
+		</legacy_data>
+	</save>
+	
+	<user_parameters>
+		<random_seed type="int" units="dimensionless">0</random_seed> 
+		<!-- Substrates -->
+		<alpha_diffusion_coefficient type="double" units="um^2/min">100000</alpha_diffusion_coefficient>
+		<alpha_decay_rate type="double" units="1/min">62.5</alpha_decay_rate>
+		<beta_diffusion_coefficient type="double" units="um^2/min">100000</beta_diffusion_coefficient>
+		<beta_decay_rate type="double" units="1/min">62.5</beta_decay_rate>
+		<!-- A Cell Type -->
+		<a_cell_persistence_time type="double" units="min">5</a_cell_persistence_time>
+		<a_cell_migration_speed type="double" units="um/min">0.5</a_cell_migration_speed>
+		<a_cell_migration_bias type="double" units="dimensionless">0</a_cell_migration_bias>
+		<a_cell_divide_time type="double" units="1/min">0.0003</a_cell_divide_time>
+		<a_cell_apoptosis_rate type="double" units="1/min">0.01</a_cell_apoptosis_rate>
+		<a_cell_alpha_uptake_rate type="double" units="1/min">0</a_cell_alpha_uptake_rate>
+		<a_cell_alpha_secretion_rate type="double" units="1/min">1</a_cell_alpha_secretion_rate>
+		<a_cell_alpha_saturation_density type="double" units="dimensionless">5</a_cell_alpha_saturation_density>
+		<a_cell_beta_uptake_rate type="double" units="1/min">0</a_cell_beta_uptake_rate>
+		<a_cell_beta_secretion_rate type="double" units="1/min">0</a_cell_beta_secretion_rate>
+		<a_cell_beta_saturation_density type="double" units="dimensionless">0</a_cell_beta_saturation_density>\
+		<a_cell_motility_scale type="double" units="dimensionless">0.5</a_cell_motility_scale>
+
+		<!-- B Cell Type -->
+		<b_cell_persistence_time type="double" units="dimensionless">5</b_cell_persistence_time>
+		<b_cell_migration_speed type="double" units="dimensionless">0.5</b_cell_migration_speed>
+		<b_cell_migration_bias type="double" units="dimensionless">0</b_cell_migration_bias>
+		<b_cell_divide_time type="double" units="dimensionless">0.0003</b_cell_divide_time>
+		<b_cell_apoptosis_rate type="double" units="dimensionless">0.01</b_cell_apoptosis_rate>
+		<b_cell_alpha_uptake_rate type="double" units="dimensionless">0</b_cell_alpha_uptake_rate>
+		<b_cell_alpha_secretion_rate type="double" units="dimensionless">0</b_cell_alpha_secretion_rate>
+		<b_cell_alpha_saturation_density type="double" units="dimensionless">0</b_cell_alpha_saturation_density>
+		<b_cell_beta_uptake_rate type="double" units="dimensionless">0</b_cell_beta_uptake_rate>
+		<b_cell_beta_secretion_rate type="double" units="dimensionless">1</b_cell_beta_secretion_rate>
+		<b_cell_beta_saturation_density type="double" units="dimensionless">5</b_cell_beta_saturation_density>
+		<b_cell_apoptosis_scale type="double" units="dimensionless">0</b_cell_apoptosis_scale>
+		<b_cell_motility_scale type="double" units="dimensionless">0.5</b_cell_motility_scale>
+
+		<!-- Cell Placement -->
+		<cell_frac_A type="double" units="dimensionless">0.5</cell_frac_A> <!-- Assumes only two cell types A and B. This is percent that will be A of the total -->
+		<!-- below, cell_spacing - percent of cell diameter that cells are intialialy spaced at. With default PC cell size and ad/rep parameters, 0.95 gives intialization at equalibrium spacing -->
+		<cell_spacing type="double" units="dimensionless">0.95</cell_spacing> 
+		<a_number_of_cells type="double" units="number">938</a_number_of_cells>
+		<b_number_of_cells type="double" units="number">312</b_number_of_cells>
+		<cell_x_min type="double" units="dimensionless">-250</cell_x_min>
+		<cell_x_max type="double" units="dimensionless">250</cell_x_max>
+		<cell_y_min type="double" units="dimensionless">-250</cell_y_min>
+		<cell_y_max type="double" units="dimensionless">250</cell_y_max>
+		
+	</user_parameters>
+	
+	
+</PhysiCell_settings>
