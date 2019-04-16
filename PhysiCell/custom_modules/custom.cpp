@@ -292,62 +292,66 @@ void setup_tissue( void )
 	double y = default_microenvironment_options.Y_range[0]+10; 
 	double y_max = default_microenvironment_options.Y_range[1]-10; 
 	
-	int n = 0; 
-	while( y < y_max )
-	{
-		x =default_microenvironment_options.X_range[0]+5;; 
-		if( n % 2 == 1 )
-		{ x = x + 0.5*cell_spacing; }
+	// int n = 0; 
+	// while( y < y_max )
+	// {
+	// 	x =default_microenvironment_options.X_range[0]+5;; 
+	// 	if( n % 2 == 1 )
+	// 	{ x = x + 0.5*cell_spacing; }
 		
-		double cell_frac_A = parameters.doubles( "cell_frac_A" );
+	// 	double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
-		while( x < x_max )
-		{
-			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
-			{
-				pCell = create_cell(wall_cell);
-				pCell->assign_position( x, y, 0.0);
-				pCell->is_movable = false;
-			}
+	// 	while( x < x_max )
+	// 	{
+	// 		if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
+	// 		{
+	// 			pCell = create_cell(wall_cell);
+	// 			pCell->assign_position( x, y, 0.0);
+	// 			pCell->is_movable = false;
+	// 		}
 
-			else
-			{
-				if(n%2 == 0) {
-					if (UniformRandom() < cell_frac_A) 
-					{
-						pCell = create_cell(A_cell);
-						pCell->assign_position( x , y , 0.0 );
-					}
-					else 
-					{
-						pCell = create_cell(B_cell);
-						pCell->assign_position( x , y , 0.0 );
-					}
-				}
-			}
-			x += cell_spacing; 
-		}
+	// 		else
+	// 		{
+	// 			if(n%2 == 0) {
+	// 				if (UniformRandom() < cell_frac_A) 
+	// 				{
+	// 					pCell = create_cell(A_cell);
+	// 					pCell->assign_position( x , y , 0.0 );
+	// 				}
+	// 				else 
+	// 				{
+	// 					pCell = create_cell(B_cell);
+	// 					pCell->assign_position( x , y , 0.0 );
+	// 				}
+	// 			}
+	// 		}
+	// 		x += cell_spacing; 
+	// 	}
 		
-		y += cell_spacing * sqrt(3.0)/2.0; 
-		n++; 
-	}
+	// 	y += cell_spacing * sqrt(3.0)/2.0; 
+	// 	n++; 
+	// }
 
 	// First setup as outlined in paper
 	// draw_cell_wall();
-	// draw_stripe(150, 60, x_max-x - 100, A_cell);
-	// draw_stripe(50, 60, x_max-x - 100, B_cell);
-	// draw_stripe(0, 60, x_max-x - 100, A_cell);
-	// draw_stripe(-50, 60, x_max-x - 100, B_cell);
-	// draw_stripe(-150, 60, x_max-x - 100, A_cell);
+	// draw_stripe(150, -205, x_max-x - 0, A_cell);
+	// draw_stripe(50, -205, x_max-x - 0, B_cell);
+	// draw_stripe(0, -205, x_max-x - 0, A_cell);
+	// draw_stripe(-50, -205, x_max-x - 0, B_cell);
+	// draw_stripe(-150, -205, x_max-x - 0, A_cell);
 
 	// Second setup as outlined in paper
-	// draw_cell_wall();
-	// draw_stripe(150, 60, (x_max-x - 100)/4, A_cell);
-	// draw_stripe(150, 60 + 3*(x_max-x - 100)/4, (x_max-x - 100)/4, A_cell);
-	// draw_stripe(50, 60, (x_max-x - 100)/4, B_cell);
-	// draw_stripe(0, 60, (x_max-x - 100)/4, A_cell);
-	// draw_stripe(-50, 60, (x_max-x - 100)/4, B_cell);
-	// draw_stripe(-150, 60, (x_max-x - 100)/4, A_cell);
+	draw_cell_wall();
+	draw_stripe(150, -205, (x_max-x - 0)/4, A_cell);
+	draw_stripe(150, 100, (x_max-x - 0)/4, A_cell);
+	draw_stripe(50, -205, (x_max-x - 0)/4, B_cell);
+	draw_stripe(50, 100, (x_max-x - 0)/4, B_cell);
+	draw_stripe(0, -205, (x_max-x - 0)/4, A_cell);
+	draw_stripe(0, 100, (x_max-x - 0)/4, A_cell);
+	draw_stripe(-50, -205, (x_max-x - 0)/4, B_cell);
+	draw_stripe(-50, 100, (x_max-x - 0)/4, B_cell);
+	draw_stripe(-150, -205, (x_max-x - 0)/4, A_cell);
+	draw_stripe(-150, 100, (x_max-x - 0)/4, A_cell);
 
 
 	// Set up tissue so pressure works
@@ -369,19 +373,12 @@ void draw_stripe(double y, double x_start, double x_length, Cell_Definition cell
 	double cell_radius = cell_defaults.phenotype.geometry.radius; 
 	double cell_spacing = parameters.doubles( "cell_spacing" ) * 2.0 * cell_radius; 
 	
-	double x = default_microenvironment_options.X_range[0]+10 + cell_spacing*0.5;
-	double x_max = default_microenvironment_options.X_range[1]-10; 
+	double x = x_start;
+	double x_max = x_start + x_length; 
 	//double y = default_microenvironment_options.Y_range[0]+10; 
 	double y_max = default_microenvironment_options.Y_range[1]-10; 
 	
 	int n = 0; 
-
-	x =default_microenvironment_options.X_range[0]+5;; 
-	if( n % 2 == 1 )
-	{ x = x + 0.5*cell_spacing; }
-	// x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
-	
-	double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
 	while( x < x_max )
 	{
