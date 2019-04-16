@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/usr/bin/invoke_app "$@" -C "start_jupyter -A -T @tool spatial_pattern_formation_in_cell_based_models.ipynb" -t spatial_pattern \
+/usr/bin/invoke_app "$@" -C "start_jupyter -A -T @tool spatial_pattern_formation_in_cell_based_models.ipynb" -t spatialpatern \
                          -u anaconda3-5.1
