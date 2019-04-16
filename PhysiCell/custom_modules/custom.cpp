@@ -258,7 +258,7 @@ void setup_microenvironment( void )
 
 void setup_tissue( void )
 {
-/* 	Cell* pC;	
+	/* 	Cell* pC;	
 	std::vector<double> position = {0,0,0}; 
 
 	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
@@ -280,21 +280,12 @@ void setup_tissue( void )
 	}
 	
 	// place a cluster of tumor cells at the center 
- */	
+ 	*/	
 
 	Cell* pCell;
 
 	double cell_radius = cell_defaults.phenotype.geometry.radius; 
 	double cell_spacing = parameters.doubles( "cell_spacing" ) * 2.0 * cell_radius; 
-	
-	// double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
-	
-	// Parameter<double> temp; 
-	
-	//std::cout << parameters << std::endl; 
-	// int i = parameters.doubles.find_index( "tumor_radius" ); 
-	
-	// Cell* pCell = NULL; 	
 	
 	double x = default_microenvironment_options.X_range[0]+10;
 	double x_max = default_microenvironment_options.X_range[1]-10; 
@@ -304,11 +295,9 @@ void setup_tissue( void )
 	int n = 0; 
 	while( y < y_max )
 	{
-
 		x =default_microenvironment_options.X_range[0]+5;; 
 		if( n % 2 == 1 )
 		{ x = x + 0.5*cell_spacing; }
-		// x_outer = sqrt( tumor_radius*tumor_radius - y*y ); 
 		
 		double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
@@ -316,11 +305,9 @@ void setup_tissue( void )
 		{
 			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
 			{
-
 				pCell = create_cell(wall_cell);
 				pCell->assign_position( x, y, 0.0);
 				pCell->is_movable = false;
-
 			}
 
 			else
@@ -331,7 +318,6 @@ void setup_tissue( void )
 						pCell = create_cell(A_cell);
 						pCell->assign_position( x , y , 0.0 );
 					}
-
 					else 
 					{
 						pCell = create_cell(B_cell);
@@ -339,31 +325,45 @@ void setup_tissue( void )
 					}
 				}
 			}
-
-			// pCell = create_cell(A_cell); // tumor cell 
-			// pCell->assign_position( x , y , 0.0 );
-			//std::cout<< x <<std::endl;
 			x += cell_spacing; 
-			
 		}
 		
 		y += cell_spacing * sqrt(3.0)/2.0; 
 		n++; 
 	}
 
+	// First setup as outlined in paper
 	// draw_cell_wall();
-	// draw_stripe(150, A_cell);
-	// draw_stripe(50, B_cell);
-	// draw_stripe(0, A_cell);
-	// draw_stripe(-50, B_cell);
-	// draw_stripe(-150, A_cell);
+	// draw_stripe(150, 60, x_max-x - 100, A_cell);
+	// draw_stripe(50, 60, x_max-x - 100, B_cell);
+	// draw_stripe(0, 60, x_max-x - 100, A_cell);
+	// draw_stripe(-50, 60, x_max-x - 100, B_cell);
+	// draw_stripe(-150, 60, x_max-x - 100, A_cell);
+
+	// Second setup as outlined in paper
+	// draw_cell_wall();
+	// draw_stripe(150, 60, (x_max-x - 100)/4, A_cell);
+	// draw_stripe(150, 60 + 3*(x_max-x - 100)/4, (x_max-x - 100)/4, A_cell);
+	// draw_stripe(50, 60, (x_max-x - 100)/4, B_cell);
+	// draw_stripe(0, 60, (x_max-x - 100)/4, A_cell);
+	// draw_stripe(-50, 60, (x_max-x - 100)/4, B_cell);
+	// draw_stripe(-150, 60, (x_max-x - 100)/4, A_cell);
+
+
+	// Set up tissue so pressure works
+	#pragma ompparallel for 
+	for( int n=0; n < (*all_cells).size() ; n++ ) 
+	{
+		Cell* pCell= (*all_cells)[n];
+		pCell->functions.update_velocity( pCell, pCell->phenotype , 0.0 );  
+	}
 
 
 
 	return; 
 }
 
-void draw_stripe(double y, Cell_Definition cell) {
+void draw_stripe(double y, double x_start, double x_length, Cell_Definition cell) {
 	Cell* pCell;
 
 	double cell_radius = cell_defaults.phenotype.geometry.radius; 
@@ -498,6 +498,8 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
     double alpha_conc = pCell->nearest_density_vector()[alpha_subsubstrate_index];
     double beta_conc = pCell->nearest_density_vector()[beta_subsubstrate_index];
 
+    static double pressure_threshold = 0.5;
+
 	if(pCell->type == 0) // Blue/inhibitor cell
 	{
 		// Motility speed changing
@@ -506,14 +508,18 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 
-		if(beta_conc >= 1) {
-			std::cout << "Concentration break:" << std::endl;
-		}
-
 		// Motility
 		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") * 1 / ( 1 + exp(-10 * (beta_conc - .5)));
 		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * 1 / ( 1 + exp(-10 * (beta_conc - .5)));
-		phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
+		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
+
+		// Only allow for proliferation if pressrue < threshold
+		if(pCell->state.simple_pressure >= pressure_threshold) {
+			phenotype.cycle.data.transition_rate(0,0) = 0;
+		}
+		else {
+			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
+		}
 	}
 
 	if(pCell->type == 1) // Yellow/inhibitor cell
@@ -532,14 +538,18 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		// The initialization could be a problem ... () - we could just fill the whole field and randomly assign membership - just like the ECM ... but no circle.
 		// definitley needs to run longer
 
-		if(alpha_conc >= 1) {
-			std::cout << "Concentration break: " << std::endl;
-		}
-
 		// motility
 		phenotype.motility.migration_speed = parameters.doubles("b_cell_motility_scale") * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
 		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
-		phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+
+		// Only allow for proliferation if pressrue < threshold
+		if(pCell->state.simple_pressure >= pressure_threshold) {
+			phenotype.cycle.data.transition_rate(0,0) = 0;
+		}
+		else {
+			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+		}
 	}
 
 
