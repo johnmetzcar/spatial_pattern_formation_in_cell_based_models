@@ -292,45 +292,45 @@ void setup_tissue( void )
 	double y = default_microenvironment_options.Y_range[0]+10; 
 	double y_max = default_microenvironment_options.Y_range[1]-10; 
 	
-	// int n = 0; 
-	// while( y < y_max )
-	// {
-	// 	x =default_microenvironment_options.X_range[0]+5;; 
-	// 	if( n % 2 == 1 )
-	// 	{ x = x + 0.5*cell_spacing; }
+	int n = 0; 
+	while( y < y_max )
+	{
+		x =default_microenvironment_options.X_range[0]+5;; 
+		if( n % 2 == 1 )
+		{ x = x + 0.5*cell_spacing; }
 		
-	// 	double cell_frac_A = parameters.doubles( "cell_frac_A" );
+		double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
-	// 	while( x < x_max )
-	// 	{
-	// 		if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
-	// 		{
-	// 			pCell = create_cell(wall_cell);
-	// 			pCell->assign_position( x, y, 0.0);
-	// 			pCell->is_movable = false;
-	// 		}
+		while( x < x_max )
+		{
+			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
+			{
+				pCell = create_cell(wall_cell);
+				pCell->assign_position( x, y, 0.0);
+				pCell->is_movable = false;
+			}
 
-	// 		else
-	// 		{
-	// 			if(n%2 == 0) {
-	// 				if (UniformRandom() < cell_frac_A) 
-	// 				{
-	// 					pCell = create_cell(A_cell);
-	// 					pCell->assign_position( x , y , 0.0 );
-	// 				}
-	// 				else 
-	// 				{
-	// 					pCell = create_cell(B_cell);
-	// 					pCell->assign_position( x , y , 0.0 );
-	// 				}
-	// 			}
-	// 		}
-	// 		x += cell_spacing; 
-	// 	}
+			else
+			{
+				if(n%2 == 0) {
+					if (UniformRandom() < cell_frac_A) 
+					{
+						pCell = create_cell(A_cell);
+						pCell->assign_position( x , y , 0.0 );
+					}
+					else 
+					{
+						pCell = create_cell(B_cell);
+						pCell->assign_position( x , y , 0.0 );
+					}
+				}
+			}
+			x += cell_spacing; 
+		}
 		
-	// 	y += cell_spacing * sqrt(3.0)/2.0; 
-	// 	n++; 
-	// }
+		y += cell_spacing * sqrt(3.0)/2.0; 
+		n++; 
+	}
 
 	// First setup as outlined in paper
 	// draw_cell_wall();
@@ -341,17 +341,17 @@ void setup_tissue( void )
 	// draw_stripe(-150, -205, x_max-x - 0, A_cell);
 
 	// Second setup as outlined in paper
-	draw_cell_wall();
-	draw_stripe(150, -205, (x_max-x - 0)/4, A_cell);
-	draw_stripe(150, 100, (x_max-x - 0)/4, A_cell);
-	draw_stripe(50, -205, (x_max-x - 0)/4, B_cell);
-	draw_stripe(50, 100, (x_max-x - 0)/4, B_cell);
-	draw_stripe(0, -205, (x_max-x - 0)/4, A_cell);
-	draw_stripe(0, 100, (x_max-x - 0)/4, A_cell);
-	draw_stripe(-50, -205, (x_max-x - 0)/4, B_cell);
-	draw_stripe(-50, 100, (x_max-x - 0)/4, B_cell);
-	draw_stripe(-150, -205, (x_max-x - 0)/4, A_cell);
-	draw_stripe(-150, 100, (x_max-x - 0)/4, A_cell);
+	// draw_cell_wall();
+	// draw_stripe(150, -205, (x_max-x - 0)/4, A_cell);
+	// draw_stripe(150, 100, (x_max-x - 0)/4, A_cell);
+	// draw_stripe(50, -205, (x_max-x - 0)/4, B_cell);
+	// draw_stripe(50, 100, (x_max-x - 0)/4, B_cell);
+	// draw_stripe(0, -205, (x_max-x - 0)/4, A_cell);
+	// draw_stripe(0, 100, (x_max-x - 0)/4, A_cell);
+	// draw_stripe(-50, -205, (x_max-x - 0)/4, B_cell);
+	// draw_stripe(-50, 100, (x_max-x - 0)/4, B_cell);
+	// draw_stripe(-150, -205, (x_max-x - 0)/4, A_cell);
+	// draw_stripe(-150, 100, (x_max-x - 0)/4, A_cell);
 
 
 	// Set up tissue so pressure works
@@ -496,6 +496,8 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
     double beta_conc = pCell->nearest_density_vector()[beta_subsubstrate_index];
 
     static double pressure_threshold = 0.5;
+    static double logistic_function_alpha = 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
+	static double logistic_function_beta = 1 / ( 1 + exp(-10 * (beta_conc - .5)));
 
 	if(pCell->type == 0) // Blue/inhibitor cell
 	{
@@ -506,8 +508,8 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 
 		// Motility
-		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") * 1 / ( 1 + exp(-10 * (beta_conc - .5)));
-		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * 1 / ( 1 + exp(-10 * (beta_conc - .5)));
+		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") * logistic_function_beta;
+		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * logistic_function_beta;
 		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
 
 		// Only allow for proliferation if pressrue < threshold
@@ -515,7 +517,8 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 			phenotype.cycle.data.transition_rate(0,0) = 0;
 		}
 		else {
-			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
+			//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
+			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * logistic_function_alpha * (1-logistic_function_beta);
 		}
 	}
 
@@ -536,8 +539,8 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		// definitley needs to run longer
 
 		// motility
-		phenotype.motility.migration_speed = parameters.doubles("b_cell_motility_scale") * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
-		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * 1 / ( 1 + exp(-10 * (alpha_conc - .5)));
+		phenotype.motility.migration_speed = parameters.doubles("b_cell_motility_scale") * logistic_function_alpha;
+		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * logistic_function_alpha;
 		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
 
 		// Only allow for proliferation if pressrue < threshold
@@ -545,7 +548,8 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 			phenotype.cycle.data.transition_rate(0,0) = 0;
 		}
 		else {
-			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+			//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
+			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * logistic_function_beta * (1-logistic_function_alpha);
 		}
 	}
 

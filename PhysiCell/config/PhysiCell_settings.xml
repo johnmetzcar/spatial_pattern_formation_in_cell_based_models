@@ -125,7 +125,8 @@
 		<a_cell_persistence_time type="double" units="min">5</a_cell_persistence_time>
 		<a_cell_migration_speed type="double" units="um/min">0.5</a_cell_migration_speed>
 		<a_cell_migration_bias type="double" units="dimensionless">0</a_cell_migration_bias>
-		<a_cell_divide_time type="double" units="1/min">0.0003</a_cell_divide_time>
+		<a_cell_divide_time_t type="double" units="1/min">0.0003</a_cell_divide_time_t>
+		<a_cell_divide_time type="double" units="1/min">1</a_cell_divide_time>
 		<a_cell_apoptosis_rate type="double" units="1/min">0.01</a_cell_apoptosis_rate>
 		<a_cell_alpha_uptake_rate type="double" units="1/min">0</a_cell_alpha_uptake_rate>
 		<a_cell_alpha_secretion_rate type="double" units="1/min">1</a_cell_alpha_secretion_rate>
@@ -139,7 +140,8 @@
 		<b_cell_persistence_time type="double" units="dimensionless">5</b_cell_persistence_time>
 		<b_cell_migration_speed type="double" units="dimensionless">0.5</b_cell_migration_speed>
 		<b_cell_migration_bias type="double" units="dimensionless">0</b_cell_migration_bias>
-		<b_cell_divide_time type="double" units="dimensionless">0.0003</b_cell_divide_time>
+		<b_cell_divide_time_t type="double" units="dimensionless">0.0003</b_cell_divide_time_t>
+		<b_cell_divide_time type="double" units="dimensionless">1</b_cell_divide_time>
 		<b_cell_apoptosis_rate type="double" units="dimensionless">0.01</b_cell_apoptosis_rate>
 		<b_cell_alpha_uptake_rate type="double" units="dimensionless">0</b_cell_alpha_uptake_rate>
 		<b_cell_alpha_secretion_rate type="double" units="dimensionless">0</b_cell_alpha_secretion_rate>
