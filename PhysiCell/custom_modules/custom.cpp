@@ -258,30 +258,6 @@ void setup_microenvironment( void )
 
 void setup_tissue( void )
 {
-	/* 	Cell* pC;	
-	std::vector<double> position = {0,0,0}; 
-
-	for(int i=0; i<parameters.doubles("a_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
-		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
-
-		pC = create_cell(A_cell); 
-		pC->assign_position( position ); 
-	}
-
-	for(int i=0; i<parameters.doubles("b_number_of_cells"); i++) {		
-		position[0] = parameters.doubles("cell_x_min") + UniformRandom()*( abs(parameters.doubles("cell_x_min"))+abs(parameters.doubles("cell_x_max")));
-		
-		position[1] = parameters.doubles("cell_y_min") + UniformRandom()*( abs(parameters.doubles("cell_y_min"))+abs(parameters.doubles("cell_y_max")));
-
-		pC = create_cell(B_cell); 
-		pC->assign_position( position ); 
-	}
-	
-	// place a cluster of tumor cells at the center 
- 	*/	
-
 	Cell* pCell;
 
 	double cell_radius = cell_defaults.phenotype.geometry.radius; 
@@ -291,67 +267,75 @@ void setup_tissue( void )
 	double x_max = default_microenvironment_options.X_range[1]-10; 
 	double y = default_microenvironment_options.Y_range[0]+10; 
 	double y_max = default_microenvironment_options.Y_range[1]-10; 
-	
-	int n = 0; 
-	while( y < y_max )
-	{
-		x =default_microenvironment_options.X_range[0]+5;; 
-		if( n % 2 == 1 )
-		{ x = x + 0.5*cell_spacing; }
-		
-		double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
-		while( x < x_max )
+	int placement = int(parameters.doubles("placement_pattern"));
+	if(placement == -1) {
+		// First setup as outlined in paper
+		draw_cell_wall();
+		draw_stripe(150, -205, x_max-x - 0, A_cell);
+		draw_stripe(50, -205, x_max-x - 0, B_cell);
+		draw_stripe(0, -205, x_max-x - 0, A_cell);
+		draw_stripe(-50, -205, x_max-x - 0, B_cell);
+		draw_stripe(-150, -205, x_max-x - 0, A_cell);
+	}
+	else if(placement == -2) {
+		// Second setup as outlined in paper
+		draw_cell_wall();
+		draw_stripe(150, -205, (x_max-x - 0)/4, A_cell);
+		draw_stripe(150, 100, (x_max-x - 0)/4, A_cell);
+		draw_stripe(50, -205, (x_max-x - 0)/4, B_cell);
+		draw_stripe(50, 100, (x_max-x - 0)/4, B_cell);
+		draw_stripe(0, -205, (x_max-x - 0)/4, A_cell);
+		draw_stripe(0, 100, (x_max-x - 0)/4, A_cell);
+		draw_stripe(-50, -205, (x_max-x - 0)/4, B_cell);
+		draw_stripe(-50, 100, (x_max-x - 0)/4, B_cell);
+		draw_stripe(-150, -205, (x_max-x - 0)/4, A_cell);
+		draw_stripe(-150, 100, (x_max-x - 0)/4, A_cell);
+	}
+	else if(placement > 0) {
+		int n = 0; 
+		while( y < y_max )
 		{
-			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
-			{
-				pCell = create_cell(wall_cell);
-				pCell->assign_position( x, y, 0.0);
-				pCell->is_movable = false;
-			}
+			x =default_microenvironment_options.X_range[0]+5;; 
+			if( n % 2 == 1 )
+			{ x = x + 0.5*cell_spacing; }
+			
+			double cell_frac_A = parameters.doubles( "cell_frac_A" );
 
-			else
+			while( x < x_max )
 			{
-				if(n%2 == 0) {
-					if (UniformRandom() < cell_frac_A) 
-					{
-						pCell = create_cell(A_cell);
-						pCell->assign_position( x , y , 0.0 );
-					}
-					else 
-					{
-						pCell = create_cell(B_cell);
-						pCell->assign_position( x , y , 0.0 );
+				if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
+				{
+					pCell = create_cell(wall_cell);
+					pCell->assign_position( x, y, 0.0);
+					pCell->is_movable = false;
+				}
+
+				else
+				{
+					if(n%placement == 0) {
+						if (UniformRandom() < cell_frac_A) 
+						{
+							pCell = create_cell(A_cell);
+							pCell->assign_position( x , y , 0.0 );
+						}
+						else 
+						{
+							pCell = create_cell(B_cell);
+							pCell->assign_position( x , y , 0.0 );
+						}
 					}
 				}
+				x += cell_spacing; 
 			}
-			x += cell_spacing; 
+			
+			y += cell_spacing * sqrt(3.0)/2.0; 
+			n++; 
 		}
-		
-		y += cell_spacing * sqrt(3.0)/2.0; 
-		n++; 
 	}
-
-	// First setup as outlined in paper
-	// draw_cell_wall();
-	// draw_stripe(150, -205, x_max-x - 0, A_cell);
-	// draw_stripe(50, -205, x_max-x - 0, B_cell);
-	// draw_stripe(0, -205, x_max-x - 0, A_cell);
-	// draw_stripe(-50, -205, x_max-x - 0, B_cell);
-	// draw_stripe(-150, -205, x_max-x - 0, A_cell);
-
-	// Second setup as outlined in paper
-	// draw_cell_wall();
-	// draw_stripe(150, -205, (x_max-x - 0)/4, A_cell);
-	// draw_stripe(150, 100, (x_max-x - 0)/4, A_cell);
-	// draw_stripe(50, -205, (x_max-x - 0)/4, B_cell);
-	// draw_stripe(50, 100, (x_max-x - 0)/4, B_cell);
-	// draw_stripe(0, -205, (x_max-x - 0)/4, A_cell);
-	// draw_stripe(0, 100, (x_max-x - 0)/4, A_cell);
-	// draw_stripe(-50, -205, (x_max-x - 0)/4, B_cell);
-	// draw_stripe(-50, 100, (x_max-x - 0)/4, B_cell);
-	// draw_stripe(-150, -205, (x_max-x - 0)/4, A_cell);
-	// draw_stripe(-150, 100, (x_max-x - 0)/4, A_cell);
+	else {
+		std::cout << "CONFIGURATION ERROR: Not sure how to initilize." << std::endl;
+	}
 
 
 	// Set up tissue so pressure works
@@ -398,6 +382,58 @@ void draw_stripe(double y, double x_start, double x_length, Cell_Definition cell
 	}
 
 	return;		
+}
+
+void draw_filled_domain(int mod) {
+	Cell* pCell;
+
+	double cell_radius = cell_defaults.phenotype.geometry.radius; 
+	double cell_spacing = parameters.doubles( "cell_spacing" ) * 2.0 * cell_radius; 
+	
+	double x = default_microenvironment_options.X_range[0]+10;
+	double x_max = default_microenvironment_options.X_range[1]-10; 
+	double y = default_microenvironment_options.Y_range[0]+10; 
+	double y_max = default_microenvironment_options.Y_range[1]-10; 
+
+	int n = 0; 
+	while( y < y_max )
+	{
+		x =default_microenvironment_options.X_range[0]+5;; 
+		if( n % 2 == 1 )
+		{ x = x + 0.5*cell_spacing; }
+		
+		double cell_frac_A = parameters.doubles( "cell_frac_A" );
+
+		while( x < x_max )
+		{
+			if (y < default_microenvironment_options.Y_range[0]+30 || x < default_microenvironment_options.X_range[0]+30 || x > default_microenvironment_options.X_range[1]-30 || y>default_microenvironment_options.Y_range[1]-30)
+			{
+				pCell = create_cell(wall_cell);
+				pCell->assign_position( x, y, 0.0);
+				pCell->is_movable = false;
+			}
+
+			else
+			{
+				if(n%2 == 0) {
+					if (UniformRandom() < cell_frac_A) 
+					{
+						pCell = create_cell(A_cell);
+						pCell->assign_position( x , y , 0.0 );
+					}
+					else 
+					{
+						pCell = create_cell(B_cell);
+						pCell->assign_position( x , y , 0.0 );
+					}
+				}
+			}
+			x += cell_spacing; 
+		}
+		
+		y += cell_spacing * sqrt(3.0)/2.0; 
+		n++; 
+	}
 }
 
 void draw_cell_wall() {
@@ -476,21 +512,9 @@ std::vector<std::string> my_coloring_function( Cell* pCell ) // A-alpha cells ar
 
 void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, double dt)
 {
-
 	static int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
-	// static int necrosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Necrosis" );
-
-	// std::cout<<"current_phase_index = "<<phenotype.cycle.data.transition_rate(0,0) <<std::endl<<std::endl;
-	// std::cout<<"Apo = "<<phenotype.death.rates[apoptosis_model_index]<<std::endl<<std::endl;
-	// std::cout<<"Nec = "<<phenotype.death.rates[necrosis_model_index]<<std::endl<<std::endl;
-	// std::cout<<"Volume = "<<phenotype.volume.total <<std::endl<<std::endl;
-	// std::cout<<"Is motile "<<phenotype.motility.is_motile <<std::endl<<std::endl;
-	// std::cout<<"Speed ="<<phenotype.motility.migration_speed <<std::endl<<std::endl;
-	// std::cout<<phenotype.cycle. <<std::endl;
-
 	static int alpha_subsubstrate_index = microenvironment.find_density_index("alpha");
 	static int beta_subsubstrate_index = microenvironment.find_density_index("beta");
-	// static int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
     
     double alpha_conc = pCell->nearest_density_vector()[alpha_subsubstrate_index];
     double beta_conc = pCell->nearest_density_vector()[beta_subsubstrate_index];
@@ -553,20 +577,5 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		}
 	}
 
-
-
-
 	return;
-}
-
-double distance_to_wall( Cell* pCell, Phenotype& phenotype, double dt ) {
-	double epsillon= 1e-7;
-	
-	// Cell is inside the cap of the duct
-	double distance_to_origin= dist(pCell->position, {0.0,0.0,0.0});  // distance to the origin 
-	distance_to_origin = std::max(distance_to_origin, epsillon);			  // prevents division by zero
-	pCell->displacement[0]= -pCell->position[0]/ distance_to_origin;
-	pCell->displacement[1]= -pCell->position[1]/ distance_to_origin;
-	pCell->displacement[2]= -pCell->position[2]/ distance_to_origin;
-	return fabs( distance_to_origin);
 }

@@ -153,6 +153,7 @@
 		<b_cell_motility_scale type="double" units="dimensionless">0.5</b_cell_motility_scale>
 
 		<!-- Cell Placement -->
+		<placement_pattern type="double" units="none" description="Option to change placement: -1 for stripes, -2 for stripes with spaces and >= 0 for full domain with higher number being more sparce">3</placement_pattern>
 		<cell_frac_A type="double" units="dimensionless">0.5</cell_frac_A> <!-- Assumes only two cell types A and B. This is percent that will be A of the total -->
 		<!-- below, cell_spacing - percent of cell diameter that cells are intialialy spaced at. With default PC cell size and ad/rep parameters, 0.95 gives intialization at equalibrium spacing -->
 		<cell_spacing type="double" units="dimensionless">0.95</cell_spacing> 

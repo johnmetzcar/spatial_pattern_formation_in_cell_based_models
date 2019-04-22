@@ -72,9 +72,9 @@ using namespace BioFVM;
 using namespace PhysiCell;
 
 void tumor_cell_phenotype_with_oncoprotein( Cell* pCell, Phenotype& phenotype, double dt ); 
-double distance_to_wall( Cell* pCell, Phenotype& phenotype, double dt ); 
 void draw_cell_wall();
 void draw_stripe(double y, double x_start, double x_length, Cell_Definition cell);
+void draw_filled_domain(int mod);
 
 // any additional cell types (beyond cell_defaults)
 
