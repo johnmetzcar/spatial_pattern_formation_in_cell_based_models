@@ -14,7 +14,7 @@
 <p>There are 3 cells in the model: A cells, B cells and Wall cells.</p>
 
 <ul>
-<li>A cells are the inhibitor cells and are <span style="color:blue">blue</span>.
+<li>A cells are the inhibitor cells and are <span style="color:blue; font-weight:bold;">blue</span>.
 
 
 <ul>
@@ -25,7 +25,7 @@
 <li>Secretes alpha and is effected by beta</li></ul>
 </li>
 
-<li>B cells are the effected by A cells and are <span style="color:yellow">yellow</span>.
+<li>B cells are the effected by A cells and are <span style="color:yellow; font-weight:bold;">yellow</span>.
 
 
 <ul>
@@ -36,7 +36,7 @@
 <li>Secretes beta and is effected by alpha</li></ul>
 </li>
 
-<li>Wall cells are placed along the outside of the domain and prevent cells spilling outside of the domain. <span style="color:black">black</span>.
+<li>Wall cells are placed along the outside of the domain and prevent cells spilling outside of the domain. <span style="color:black; font-weight:bold;">black</span>.
 
 
 <ul>
@@ -54,4 +54,4 @@
 
 <h3 id="domain">Domain</h3>
 
-<p>The domain is initilized to be a 500 um x 500 um with dx=dy=dz=20 um.  The simulations are designed to be run in 2D but could be converted to 3D with ease.  The domain is initiallized with wall cells along the outer perimiter.  The A and B cells are initilized <strong><em>_</em><em>_</em><em>_</em><em>_</em><em>_</em>_</strong>- final initialization here.</p>
+<p>The domain is initilized to be a 500 um x 500 um with dx=dy=dz=20 um.  The simulations are designed to be run in 2D but could be converted to 3D with ease.  The domain is initiallized with wall cells along the outer perimiter.  The A and B cells are initilized in a couple user defined ways using the <i>placement_pattern</i> XML paramater.  If set to 1 the domain will be competely filled.  If set to 2 it will simulate a sparcer domain that were used to run the simulations.  Anything greater than 2 will make the domain even spacer.  Additionally, <i>placement_pattern</i> can be set to -1 to simulate a few strips that give an interesting pattern and -2 for the same strips but with the cells in the middle half gone. </p>
