@@ -86,10 +86,14 @@ def Clusters_To_Centers(m, clusters):
     centers = []
     for i in clusters:
         length = len(clusters[i])
-        centerComponents = tuple([0]*m)
-        for j in clusters[i]:
-            centerComponents = tuple(map(operator.add, centerComponents, j[1]))
-        centers.append(tuple(map(operator.truediv, centerComponents, tuple([length]*m))))
+
+        if length != 0:
+            centerComponents = tuple([0]*m)
+            for j in clusters[i]:
+                centerComponents = tuple(map(operator.add, centerComponents, j[1]))
+            centers.append(tuple(map(operator.truediv, centerComponents, tuple([length]*m))))
+        else:
+            centers.append(i[1])
 
     return centers
 
@@ -155,14 +159,35 @@ def build_scree_plot(start_k, end_k, m, points):
     # Run successive k-means clustering
     results = []
     for k in range(start_k, end_k):
-        clusters = K_MeanClustering(k, m, coords)
+        clusters = K_MeanClustering(k, m, points)
         #plotClusters(clusters)
         wss = WSS(clusters)
         results.append( (k, wss) )
     print(results)
     plotSkree(results)
 
+def load_iris(path):
+    f = open(path, 'r').readlines()
+    data = []
+
+    for i in range(1, len(f)):
+        row = f[i].split(',')
+        row = row[:-1]
+
+        for j in range(0, len(row)):
+            row[j] = float(row[j])
+
+        data.append((0, tuple(row)))
+
+    return data
+
 if __name__ == '__main__':
+    data = load_iris("iris.csv")
+    build_scree_plot(2, 15, 4, data)
+
+    exit()
+
+
     print("\nTest: build_scree_plot")
     # Get data from file
     data = sio.loadmat("test.mat")["cells"]
@@ -172,7 +197,7 @@ if __name__ == '__main__':
     for i in range(len(data[0])):
         if int(data[5,i]) != 2:
             coords.append( (int(data[5,i]), (data[1,i], data[2,i]) ) )
-    build_scree_plot(2, 100, 2, data)
+    build_scree_plot(2, 15, 2, coords)
  
     exit()
 
