@@ -117,52 +117,52 @@
 	<user_parameters>
 		<random_seed type="int" units="dimensionless">0</random_seed> 
 		<!-- Substrates -->
-		<alpha_diffusion_coefficient type="double" units="um^2/min">100000</alpha_diffusion_coefficient>
-		<alpha_decay_rate type="double" units="1/min">62.5</alpha_decay_rate>
-		<beta_diffusion_coefficient type="double" units="um^2/min">100000</beta_diffusion_coefficient>
-		<beta_decay_rate type="double" units="1/min">62.5</beta_decay_rate>
+		<alpha_diffusion_coefficient type="double" units="um^2/min" description="alpha diffusion coefficient">100000</alpha_diffusion_coefficient>
+		<alpha_decay_rate type="double" units="1/min" description="alpha decay rate">62.5</alpha_decay_rate>
+		<beta_diffusion_coefficient type="double" units="um^2/min" description="beta diffusion coefficient">100000</beta_diffusion_coefficient>
+		<beta_decay_rate type="double" units="1/min" description="beta decay rate">62.5</beta_decay_rate>
 		<!-- A Cell Type -->
-		<a_cell_persistence_time type="double" units="min">5</a_cell_persistence_time>
-		<a_cell_migration_speed type="double" units="um/min">0.5</a_cell_migration_speed>
-		<a_cell_migration_bias type="double" units="dimensionless">0</a_cell_migration_bias>
-		<a_cell_divide_time_t type="double" units="1/min">0.0003</a_cell_divide_time_t>
-		<a_cell_divide_time type="double" units="1/min">1</a_cell_divide_time>
-		<a_cell_apoptosis_rate type="double" units="1/min">0.01</a_cell_apoptosis_rate>
-		<a_cell_alpha_uptake_rate type="double" units="1/min">0</a_cell_alpha_uptake_rate>
-		<a_cell_alpha_secretion_rate type="double" units="1/min">1</a_cell_alpha_secretion_rate>
-		<a_cell_alpha_saturation_density type="double" units="dimensionless">5</a_cell_alpha_saturation_density>
-		<a_cell_beta_uptake_rate type="double" units="1/min">0</a_cell_beta_uptake_rate>
-		<a_cell_beta_secretion_rate type="double" units="1/min">0</a_cell_beta_secretion_rate>
-		<a_cell_beta_saturation_density type="double" units="dimensionless">0</a_cell_beta_saturation_density>\
-		<a_cell_motility_scale type="double" units="dimensionless">0.5</a_cell_motility_scale>
+		<a_cell_persistence_time type="double" units="min" description="A-type cell persistence time">5</a_cell_persistence_time>
+		<a_cell_migration_speed type="double" units="um/min" description="A-type cell base speed">0.5</a_cell_migration_speed>
+		<a_cell_migration_bias type="double" units="dimensionless" description="A-type cell motility bias">0</a_cell_migration_bias>
+		<a_cell_divide_time_t type="double" units="1/min" description="A-type cell base proliferation time">0.0003</a_cell_divide_time_t>
+		<a_cell_divide_time type="double" units="1/min" description="A-type cell base proliferation time">1</a_cell_divide_time>
+		<a_cell_apoptosis_rate type="double" units="1/min" description="A-type cell base apoptosis rate">0.01</a_cell_apoptosis_rate>
+		<a_cell_alpha_uptake_rate type="double" units="1/min" description="A-type cell alpha uptake rate">0</a_cell_alpha_uptake_rate>
+		<a_cell_alpha_secretion_rate type="double" units="1/min" description="A-type cell alpha secretion rate">1</a_cell_alpha_secretion_rate>
+		<a_cell_alpha_saturation_density type="double" units="dimensionless" description="A-type cell alpha saturation density">5</a_cell_alpha_saturation_density>
+		<a_cell_beta_uptake_rate type="double" units="1/min" description="A-type cell beta uptake rate">0</a_cell_beta_uptake_rate>
+		<a_cell_beta_secretion_rate type="double" units="1/min" description="A-type cell beta secretion rate">0</a_cell_beta_secretion_rate>
+		<a_cell_beta_saturation_density type="double" units="dimensionless" description="A-type cell beta saturation density">0</a_cell_beta_saturation_density>
+		<a_cell_motility_scale type="double" units="dimensionless" hidden="true">0.5</a_cell_motility_scale>
 
 		<!-- B Cell Type -->
-		<b_cell_persistence_time type="double" units="dimensionless">5</b_cell_persistence_time>
-		<b_cell_migration_speed type="double" units="dimensionless">0.5</b_cell_migration_speed>
-		<b_cell_migration_bias type="double" units="dimensionless">0</b_cell_migration_bias>
-		<b_cell_divide_time_t type="double" units="dimensionless">0.0003</b_cell_divide_time_t>
-		<b_cell_divide_time type="double" units="dimensionless">1</b_cell_divide_time>
-		<b_cell_apoptosis_rate type="double" units="dimensionless">0.01</b_cell_apoptosis_rate>
-		<b_cell_alpha_uptake_rate type="double" units="dimensionless">0</b_cell_alpha_uptake_rate>
-		<b_cell_alpha_secretion_rate type="double" units="dimensionless">0</b_cell_alpha_secretion_rate>
-		<b_cell_alpha_saturation_density type="double" units="dimensionless">0</b_cell_alpha_saturation_density>
-		<b_cell_beta_uptake_rate type="double" units="dimensionless">0</b_cell_beta_uptake_rate>
-		<b_cell_beta_secretion_rate type="double" units="dimensionless">1</b_cell_beta_secretion_rate>
-		<b_cell_beta_saturation_density type="double" units="dimensionless">5</b_cell_beta_saturation_density>
-		<b_cell_apoptosis_scale type="double" units="dimensionless">0</b_cell_apoptosis_scale>
-		<b_cell_motility_scale type="double" units="dimensionless">0.5</b_cell_motility_scale>
+		<b_cell_persistence_time type="double" units="dimensionless" escription="B-type cell persistence time">5</b_cell_persistence_time>
+		<b_cell_migration_speed type="double" units="dimensionless" description="B-type cell base speed">0.5</b_cell_migration_speed>
+		<b_cell_migration_bias type="double" units="dimensionless" description="B-type cell motility bias">0</b_cell_migration_bias>
+		<b_cell_divide_time_t type="double" units="dimensionless" description="B-type cell base proliferation time">0.0003</b_cell_divide_time_t>
+		<b_cell_divide_time type="double" units="dimensionless" description="B-type cell base proliferation time">1</b_cell_divide_time>
+		<b_cell_apoptosis_rate type="double" units="dimensionless" description="B-type cell base apoptosis rate">0.01</b_cell_apoptosis_rate>
+		<b_cell_alpha_uptake_rate type="double" units="dimensionless" description="B-type cell alpha uptake rate">0</b_cell_alpha_uptake_rate>
+		<b_cell_alpha_secretion_rate type="double" units="dimensionless" description="B-type cell alpha secretion rate">0</b_cell_alpha_secretion_rate>
+		<b_cell_alpha_saturation_density type="double" units="dimensionless" description="B-type cell alpha saturation density">0</b_cell_alpha_saturation_density>
+		<b_cell_beta_uptake_rate type="double" units="dimensionless" description="B-type cell beta uptake rate">0</b_cell_beta_uptake_rate>
+		<b_cell_beta_secretion_rate type="double" units="dimensionless" description="B-type cell beta secretion rate">1</b_cell_beta_secretion_rate>
+		<b_cell_beta_saturation_density type="double" units="dimensionless" description="B-type cell beta secretion rate">5</b_cell_beta_saturation_density>
+		<b_cell_apoptosis_scale type="double" units="dimensionless" hidden="true">0</b_cell_apoptosis_scale>
+		<b_cell_motility_scale type="double" units="dimensionless" hidden="true">0.5</b_cell_motility_scale>
 
 		<!-- Cell Placement -->
 		<placement_pattern type="double" units="none" description="Option to change placement: -1 for stripes, -2 for stripes with spaces and >= 0 for full domain with higher number being more sparce">3</placement_pattern>
-		<cell_frac_A type="double" units="dimensionless">0.5</cell_frac_A> <!-- Assumes only two cell types A and B. This is percent that will be A of the total -->
+		<cell_frac_A type="double" units="dimensionless" description="Average percent A-type cells at simulation initialization">0.5</cell_frac_A> <!-- Assumes only two cell types A and B. This is percent that will be A of the total -->
 		<!-- below, cell_spacing - percent of cell diameter that cells are intialialy spaced at. With default PC cell size and ad/rep parameters, 0.95 gives intialization at equalibrium spacing -->
-		<cell_spacing type="double" units="dimensionless">0.95</cell_spacing> 
-		<a_number_of_cells type="double" units="number">938</a_number_of_cells>
-		<b_number_of_cells type="double" units="number">312</b_number_of_cells>
-		<cell_x_min type="double" units="dimensionless">-250</cell_x_min>
-		<cell_x_max type="double" units="dimensionless">250</cell_x_max>
-		<cell_y_min type="double" units="dimensionless">-250</cell_y_min>
-		<cell_y_max type="double" units="dimensionless">250</cell_y_max>
+		<cell_spacing type="double" units="dimensionless" hidden="true">0.95</cell_spacing> 
+		<a_number_of_cells type="double" units="number" hidden="true">938</a_number_of_cells>
+		<b_number_of_cells type="double" units="number" hidden="true">312</b_number_of_cells>
+		<cell_x_min type="double" units="dimensionless" hidden="true">-250</cell_x_min>
+		<cell_x_max type="double" units="dimensionless" hidden="true">250</cell_x_max>
+		<cell_y_min type="double" units="dimensionless" hidden="true">-250</cell_y_min>
+		<cell_y_max type="double" units="dimensionless" hidden="true">250</cell_y_max>
 		
 	</user_parameters>
 	

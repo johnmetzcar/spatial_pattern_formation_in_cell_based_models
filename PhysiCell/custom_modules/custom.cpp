@@ -532,7 +532,7 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
 
 		// Motility
-		phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") * logistic_function_beta;
+		phenotype.motility.migration_speed = parameters.doubles("a_cell_migration_speed") * logistic_function_beta;
 		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * logistic_function_beta;
 		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
 
@@ -563,7 +563,7 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 		// definitley needs to run longer
 
 		// motility
-		phenotype.motility.migration_speed = parameters.doubles("b_cell_motility_scale") * logistic_function_alpha;
+		phenotype.motility.migration_speed = parameters.doubles("b_cell_migration_speed") * logistic_function_alpha;
 		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * logistic_function_alpha;
 		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
 
