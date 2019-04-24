@@ -125,7 +125,6 @@
 		<a_cell_persistence_time type="double" units="min" description="A-type cell persistence time">5</a_cell_persistence_time>
 		<a_cell_migration_speed type="double" units="um/min" description="A-type cell base speed">0.5</a_cell_migration_speed>
 		<a_cell_migration_bias type="double" units="dimensionless" description="A-type cell motility bias">0</a_cell_migration_bias>
-		<a_cell_divide_time_t type="double" units="1/min" description="A-type cell base proliferation time">0.0003</a_cell_divide_time_t>
 		<a_cell_divide_time type="double" units="1/min" description="A-type cell base proliferation time">1</a_cell_divide_time>
 		<a_cell_apoptosis_rate type="double" units="1/min" description="A-type cell base apoptosis rate">0.01</a_cell_apoptosis_rate>
 		<a_cell_alpha_uptake_rate type="double" units="1/min" description="A-type cell alpha uptake rate">0</a_cell_alpha_uptake_rate>
@@ -140,7 +139,6 @@
 		<b_cell_persistence_time type="double" units="dimensionless" escription="B-type cell persistence time">5</b_cell_persistence_time>
 		<b_cell_migration_speed type="double" units="dimensionless" description="B-type cell base speed">0.5</b_cell_migration_speed>
 		<b_cell_migration_bias type="double" units="dimensionless" description="B-type cell motility bias">0</b_cell_migration_bias>
-		<b_cell_divide_time_t type="double" units="dimensionless" description="B-type cell base proliferation time">0.0003</b_cell_divide_time_t>
 		<b_cell_divide_time type="double" units="dimensionless" description="B-type cell base proliferation time">1</b_cell_divide_time>
 		<b_cell_apoptosis_rate type="double" units="dimensionless" description="B-type cell base apoptosis rate">0.01</b_cell_apoptosis_rate>
 		<b_cell_alpha_uptake_rate type="double" units="dimensionless" description="B-type cell alpha uptake rate">0</b_cell_alpha_uptake_rate>
@@ -153,7 +151,8 @@
 		<b_cell_motility_scale type="double" units="dimensionless" hidden="true">0.5</b_cell_motility_scale>
 
 		<!-- Cell Placement -->
-		<placement_pattern type="double" units="none" description="Option to change placement: -1 for stripes, -2 for stripes with spaces and >= 0 for full domain with higher number being more sparce">3</placement_pattern>
+		<model_number type="double" units="none" description="Select which model to use: 1,2,3">3</model_number>
+		<placement_pattern type="double" units="none" description="Option to change placement: -1 for stripes, -2 for stripes with spaces and >= 0 for full domain with higher number being more sparce">2</placement_pattern>
 		<cell_frac_A type="double" units="dimensionless" description="Average percent A-type cells at simulation initialization">0.5</cell_frac_A> <!-- Assumes only two cell types A and B. This is percent that will be A of the total -->
 		<!-- below, cell_spacing - percent of cell diameter that cells are intialialy spaced at. With default PC cell size and ad/rep parameters, 0.95 gives intialization at equalibrium spacing -->
 		<cell_spacing type="double" units="dimensionless" hidden="true">0.95</cell_spacing> 

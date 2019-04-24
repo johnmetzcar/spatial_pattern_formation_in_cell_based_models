@@ -525,55 +525,76 @@ void alpha_and_beta_based_proliferation (Cell* pCell, Phenotype& phenotype, doub
 
 	if(pCell->type == 0) // Blue/inhibitor cell
 	{
-		// Motility speed changing
-		//phenotype.motility.migration_speed = parameters.doubles("a_cell_motility_scale") / (alpha_conc + 1e-9);
-		//phenotype.motility.migration_speed =  0.5 * pow( (1 -  1 / ( 1 + exp(-10 * (alpha_conc - .5)))), 2);
-		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
-																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
+		if( int(parameters.doubles("model_number")) == 1 ) {
+			phenotype.motility.migration_speed = parameters.doubles("a_cell_migration_speed") * logistic_function_beta;
+			phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * logistic_function_beta;
+			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1-logistic_function_beta);
+		}
+		else if( int(parameters.doubles("model_number")) == 2 ) {
+			phenotype.motility.migration_speed = parameters.doubles("a_cell_migration_speed") * logistic_function_beta;
+			phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * logistic_function_beta;
 
-		// Motility
-		phenotype.motility.migration_speed = parameters.doubles("a_cell_migration_speed") * logistic_function_beta;
-		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * logistic_function_beta;
-		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
+			// Only allow for proliferation if pressrue < threshold
+			if(pCell->state.simple_pressure >= pressure_threshold) {
+				phenotype.cycle.data.transition_rate(0,0) = 0;
+			}
+			else {
+				phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1-logistic_function_beta);
+			}
+		}
+		else if( int(parameters.doubles("model_number")) == 3 ) {
+			// Motility
+			phenotype.motility.migration_speed = parameters.doubles("a_cell_migration_speed") * logistic_function_beta;
+			phenotype.death.rates[apoptosis_model_index] = parameters.doubles("a_cell_apoptosis_rate") * logistic_function_beta;
 
-		// Only allow for proliferation if pressrue < threshold
-		if(pCell->state.simple_pressure >= pressure_threshold) {
-			phenotype.cycle.data.transition_rate(0,0) = 0;
+			// Only allow for proliferation if pressrue < threshold
+			if(pCell->state.simple_pressure >= pressure_threshold) {
+				phenotype.cycle.data.transition_rate(0,0) = 0;
+			}
+			else {
+				phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * logistic_function_alpha * (1-logistic_function_beta);
+			}
 		}
 		else {
-			//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (beta_conc - .5))));
-			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * logistic_function_alpha * (1-logistic_function_beta);
+			std::cout << "Model number is not valid.  Nothing will be updated" << std::endl;
 		}
 	}
 
 	if(pCell->type == 1) // Yellow/inhibitor cell
 	{
-		///phenotype.death.rates[apoptosis_model_index] = alpha_conc * parameters.doubles("b_cell_motility_scale") * parameters.doubles("b_cell_apoptosis_scale");
+		if( int(parameters.doubles("model_number")) == 1 ) {
+			// Motility speed changing
+			phenotype.motility.migration_speed = parameters.doubles("b_cell_migration_speed") * logistic_function_alpha;
+			phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * logistic_function_alpha;
+			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1-logistic_function_alpha);
+		}
+		else if( int(parameters.doubles("model_number")) == 2 ) {
+			phenotype.motility.migration_speed = parameters.doubles("b_cell_migration_speed") * logistic_function_alpha;
+			phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * logistic_function_alpha;
 
-		// Motility speed changing
-		//phenotype.motility.migration_speed = alpha_conc * parameters.doubles("b_cell_motility_scale");
-		// phenotype.motility.migration_speed = 0.5 * (alpha_conc / (1-alpha_conc));
-		//phenotype.motility.migration_speed = 0.5 * 1 / pow( ( 1 + exp(-10 * (alpha_conc - .5))), 2 );
-		// phenotype.motility.migration_speed = 0.40 * (alpha_conc); // This might be working (sright line with 0.4). I think we would need to run for 
-																	 // a long time, lilke 10 plus days. Ratio is 75 % blue. See  out3_medium_speed.gif
+			// Only allow for proliferation if pressrue < threshold
+			if(pCell->state.simple_pressure >= pressure_threshold) {
+				phenotype.cycle.data.transition_rate(0,0) = 0;
+			}
+			else {
+				phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1-logistic_function_alpha);
+			}
+		}
+		else if( int(parameters.doubles("model_number")) == 3 ) {
+			// Motility
+			phenotype.motility.migration_speed = parameters.doubles("b_cell_migration_speed") * logistic_function_alpha;
+			phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * logistic_function_alpha;
 
-		// might need the b field - since a secretes alpha, alpha basically inhibts instelf ... 
-		// Might need slightly fewer agents - they may be too stuck to move
-		// The initialization could be a problem ... () - we could just fill the whole field and randomly assign membership - just like the ECM ... but no circle.
-		// definitley needs to run longer
-
-		// motility
-		phenotype.motility.migration_speed = parameters.doubles("b_cell_migration_speed") * logistic_function_alpha;
-		phenotype.death.rates[apoptosis_model_index] = parameters.doubles("b_cell_apoptosis_rate") * logistic_function_alpha;
-		//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
-
-		// Only allow for proliferation if pressrue < threshold
-		if(pCell->state.simple_pressure >= pressure_threshold) {
-			phenotype.cycle.data.transition_rate(0,0) = 0;
+			// Only allow for proliferation if pressrue < threshold
+			if(pCell->state.simple_pressure >= pressure_threshold) {
+				phenotype.cycle.data.transition_rate(0,0) = 0;
+			}
+			else {
+				phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * logistic_function_beta * (1-logistic_function_alpha);
+			}
 		}
 		else {
-			//phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("b_cell_divide_time") * (1 - 1 / ( 1 + exp(-10 * (alpha_conc - .5))));
-			phenotype.cycle.data.transition_rate(0,0) = parameters.doubles("a_cell_divide_time") * logistic_function_beta * (1-logistic_function_alpha);
+			std::cout << "Model number is not valid.  Nothing will be updated" << std::endl;
 		}
 	}
 
