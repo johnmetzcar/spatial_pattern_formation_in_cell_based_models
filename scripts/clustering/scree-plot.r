@@ -88,7 +88,7 @@ for(i in files) {
 }
 
 # Generate plot
-matplot(total_percents, type = c("l"),pch=1, col = rainbow(k.max)[k.min:k.max], xlab = "Output #", ylab = "% segregated", main = "Model 3 percent segregated over time for different k")
+matplot(total_percents, type = c("l"),pch=1, col = rainbow(k.max)[k.min:k.max], xlab = "Output #", ylab = "% segregated", main = "Model 2 percent segregated over time for k=10:20")
  legend("topleft", legend = k.min:k.max, col=rainbow(k.max)[k.min:k.max], pch=20, ncol = 2) # optional legend
 
 

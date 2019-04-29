@@ -116,12 +116,23 @@
 	
 	<user_parameters>
 		<random_seed type="int" units="dimensionless">0</random_seed> 
+
+		<!-- Model Initialization -->
+		<Model_Initialization type="double" units="none" description="This is a spacer"></Model_Initialization>
+		<model_number type="double" units="none" description="Select which model to use: 1,2,3">3</model_number>
+		<placement_pattern type="double" units="none" description="Option to change placement: -1 for stripes, -2 for stripes with spaces and >= 0 for full domain with higher number being more sparce">2</placement_pattern>
+		<cell_frac_A type="double" units="dimensionless" description="Average percent A-type cells at simulation initialization">0.5</cell_frac_A>
+		<cell_spacing type="double" units="dimensionless" hidden="true">0.95</cell_spacing> 
+
 		<!-- Substrates -->
+		<Substrates type="double" units="none" description="This is a spacer"></Substrates>
 		<alpha_diffusion_coefficient type="double" units="um^2/min" description="alpha diffusion coefficient">100000</alpha_diffusion_coefficient>
 		<alpha_decay_rate type="double" units="1/min" description="alpha decay rate">62.5</alpha_decay_rate>
 		<beta_diffusion_coefficient type="double" units="um^2/min" description="beta diffusion coefficient">100000</beta_diffusion_coefficient>
 		<beta_decay_rate type="double" units="1/min" description="beta decay rate">62.5</beta_decay_rate>
+
 		<!-- A Cell Type -->
+		<A_Type_Cells type="double" units="none" description="This is a spacer"></A_Type_Cells>
 		<a_cell_persistence_time type="double" units="min" description="A-type cell persistence time">5</a_cell_persistence_time>
 		<a_cell_migration_speed type="double" units="um/min" description="A-type cell base speed">0.5</a_cell_migration_speed>
 		<a_cell_migration_bias type="double" units="dimensionless" description="A-type cell motility bias">0</a_cell_migration_bias>
@@ -133,9 +144,9 @@
 		<a_cell_beta_uptake_rate type="double" units="1/min" description="A-type cell beta uptake rate">0</a_cell_beta_uptake_rate>
 		<a_cell_beta_secretion_rate type="double" units="1/min" description="A-type cell beta secretion rate">0</a_cell_beta_secretion_rate>
 		<a_cell_beta_saturation_density type="double" units="dimensionless" description="A-type cell beta saturation density">0</a_cell_beta_saturation_density>
-		<a_cell_motility_scale type="double" units="dimensionless" hidden="true">0.5</a_cell_motility_scale>
 
 		<!-- B Cell Type -->
+		<B_Type_Cells type="double" units="none" description="This is a spacer"></B_Type_Cells>
 		<b_cell_persistence_time type="double" units="dimensionless" escription="B-type cell persistence time">5</b_cell_persistence_time>
 		<b_cell_migration_speed type="double" units="dimensionless" description="B-type cell base speed">0.5</b_cell_migration_speed>
 		<b_cell_migration_bias type="double" units="dimensionless" description="B-type cell motility bias">0</b_cell_migration_bias>
@@ -147,21 +158,6 @@
 		<b_cell_beta_uptake_rate type="double" units="dimensionless" description="B-type cell beta uptake rate">0</b_cell_beta_uptake_rate>
 		<b_cell_beta_secretion_rate type="double" units="dimensionless" description="B-type cell beta secretion rate">1</b_cell_beta_secretion_rate>
 		<b_cell_beta_saturation_density type="double" units="dimensionless" description="B-type cell beta secretion rate">5</b_cell_beta_saturation_density>
-		<b_cell_apoptosis_scale type="double" units="dimensionless" hidden="true">0</b_cell_apoptosis_scale>
-		<b_cell_motility_scale type="double" units="dimensionless" hidden="true">0.5</b_cell_motility_scale>
-
-		<!-- Cell Placement -->
-		<model_number type="double" units="none" description="Select which model to use: 1,2,3">3</model_number>
-		<placement_pattern type="double" units="none" description="Option to change placement: -1 for stripes, -2 for stripes with spaces and >= 0 for full domain with higher number being more sparce">2</placement_pattern>
-		<cell_frac_A type="double" units="dimensionless" description="Average percent A-type cells at simulation initialization">0.5</cell_frac_A> <!-- Assumes only two cell types A and B. This is percent that will be A of the total -->
-		<!-- below, cell_spacing - percent of cell diameter that cells are intialialy spaced at. With default PC cell size and ad/rep parameters, 0.95 gives intialization at equalibrium spacing -->
-		<cell_spacing type="double" units="dimensionless" hidden="true">0.95</cell_spacing> 
-		<a_number_of_cells type="double" units="number" hidden="true">938</a_number_of_cells>
-		<b_number_of_cells type="double" units="number" hidden="true">312</b_number_of_cells>
-		<cell_x_min type="double" units="dimensionless" hidden="true">-250</cell_x_min>
-		<cell_x_max type="double" units="dimensionless" hidden="true">250</cell_x_max>
-		<cell_y_min type="double" units="dimensionless" hidden="true">-250</cell_y_min>
-		<cell_y_max type="double" units="dimensionless" hidden="true">250</cell_y_max>
 		
 	</user_parameters>
 	
