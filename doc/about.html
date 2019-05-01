@@ -1,79 +1,182 @@
-<h1 id="spatialpatternformationincellbasedmodels">Spatial Pattern Formation in Cell Based Models</h1>
 
-<h2>GUI Overview</h2>
-<strong>Config Basics tab:</strong> input parameters common to all models (e.g., domain grid, simulation time, choice/frequency of outputs)
-<strong>User Params tab:</strong>   input parameters that are model-specific
-<strong>Out: Cell Plots tab:</strong> output display of the cells
-<strong>Out: Substrate Plots tab:</strong> output display of the substrates
+  <center>
+    <h1>Generating Turing-like patterns in an off-lattice agent based model</h1>
+    <h2>Ben Duggan and John Metzcar</h2>
+    <h2>April 24, 2019</h2>
+  </center>
 
-<h2>Key Paramaters</h2>
-<ul>
-	<li><strong>model_number:</strong> Select which model to use: 1,2,3.  Model 1 sets </li>
-</ul>
+  <h1>GUI Overview</h1>
+  <strong>Config Basics tab:</strong> input parameters common to all models (e.g., domain grid, simulation time, choice/frequency of outputs)<br>
+  <strong>User Params tab:</strong>   input parameters that are model-specific<br>
+  <strong>Out: Cell Plots tab:</strong> output display of the cells<br>
+  <strong>Out: Substrate Plots tab:</strong> output display of the substrates<br>
 
+  <p><a name="toc.1"><h1>1&nbsp;Background</h1>
+  <p><a name="toc.1.1"><h2>1.1&nbsp;Turing's morphogenesis model</h2>
 
+  From Turing's Chemical Basis of Morphogenesis[6],
 
-
-
-
-
-
-
-
-
-
-<p>Exploring spatial pattern formation in cell-based models, starting with Turing patterns in PhysiCell</p>
-
-<p>This <a href="https://github.com/johnmetzcar/spatial_pattern_formation_in_cell_based_models">repo</a> houses the code for the ENRG-E 399/599 final project for Team 1.  Team members: <a href="https://github.com/johnmetzcar">John Metzcar</a> and <a href="https://github.com/BenSDuggan">Ben Duggan</a>.  The goal of this project is to create Turing-like patterns using <a href="https://github.com/MathCancer/PhysiCell">PhysiCell</a>.  You can download the code and run it (found in the PhysiCell directory) or run it on (NanoHub)[].</p>
-
-<p>Example simultion of the model:
-<img src="/docs/images/sample.gif" alt="sim results" /></p>
-
-<h2 id="modeldescription">Model Description</h2>
-
-<h3 id="cellagents">Cell agents:</h3>
-
-<p>There are 3 cells in the model: A cells, B cells and Wall cells.</p>
-
-<ul>
-<li>A cells are the inhibitor cells and are <span style="color:blue; font-weight:bold;">blue</span>.
+  <table style="width:100%">
+    <tr><td style="text-align:center">$\frac{\partial A}{dt} = f(A, B) + D_A \nabla^2 A$</td><td width="50px">(1)</td></tr>
+    <tr><td style="text-align:center">$\frac{\partial B}{dt} = g(A, B) + D_B \nabla^2 B$</td><td width="50px">(2)</td></tr>
+  </table>
+  with no flux boundary conditions: $(\mathbf{n} \cdot \nabla) \left( \begin{array}{l}{A} \\ {B}\end{array}\right)=0$.
 
 
-<ul>
-<li>Using live cycle model and apoptosis</li>
+  f(A, B) and g(A, B) are interaction-constitutive relations between A and B, which necessarily include non-linear terms. As specified by Gierer and Meinhardt [2], one field acts as an activator, while the other faster diffusing chemical acts as an inhibitor of the other species. 
 
-<li>Motility enabled, persistance time of 5 minutes, migration bias set to 0 (completely random).</li>
+  As an example for the functional form f and g from  [5]: 
 
-<li>Secretes alpha and is effected by beta</li></ul>
-</li>
+  <table style="width:100%">
+    <tr><td style="text-align:center">$f(A, B) = a-A-h(A, B)$</td><td width="50px">(3)</td></tr>
+    <tr><td style="text-align:center">$g(A, B) = \alpha(b-B)-h(A, B)$</td><td width="50px">(4)</td></tr>
+    <tr><td style="text-align:center">$h(A, B) = \frac{\rho A B}{1+A+K A^{2}} $</td><td width="50px">(5)</td></tr>
+  </table>
 
-<li>B cells are the effected by A cells and are <span style="color:yellow; font-weight:bold;">yellow</span>.
+  which produces the following:
 
-
-<ul>
-<li>Using live cycle model and apoptosis</li>
-
-<li>Motility enabled, persistance time of 5 minutes, migration bias set to 0 (completely random).</li>
-
-<li>Secretes beta and is effected by alpha</li></ul>
-</li>
-
-<li>Wall cells are placed along the outside of the domain and prevent cells spilling outside of the domain. <span style="color:black; font-weight:bold;">black</span>.
+ 
+  <div style="text-align: center">
+    <img src="https://github.com/johnmetzcar/spatial_pattern_formation_in_cell_based_models/raw/master/docs/images/simulated_cheetah_tails.png" style="height: 400px"><br>
+    <span>Figure (1) From Murray Volume II, a simulated animal coat pattern [5].</span>
+  </div>
 
 
-<ul>
-<li>Using live cycle model and apoptosis but both have rates set to 0 (disabeling them)</li>
+  <p><a name="toc.1.2"><h2>1.2&nbsp;Turning patterns in cell-based modeling</h2>
+  Using Turing's model of morphogenesis as inspiration, this model attempts to create Turing like patterns but using a discrete, cell-based modeling paradigm. Specifically, our model is implemented in PhysiCell [1]. Other modelers have also created cell-based models of Turing-like patterns, but using fundamentally different rule sets such as differential cell-cell adhesion and stochastic expression of morphogens [3,4,7]. <br><br>
 
-<li>Motility disabled</li>
+  To accomplish this, overall we attempt to segregate A and B cells through interactions of inhibition and promotion mitigated through a set of short ranging diffusing chemicals.  A cells producing $\alpha$ and B cells producing $\beta$. The signaling chemicals affect the base rates of proliferation, apoptosis, and speeds of the opposite cells - increasing rates of apoptosis and cell speed in a saturating logistic form and decreasing proliferation in the opposite fashion (1 - bounded logistic form). This casts the signals $\alpha$ and $\beta$ as almost being a "quorum" like signal, with increasing cellular density increasing the power of the signals promoting death, motility and inhibiting proliferation in the opposing cell species. Additionally, we add a constraint on proliferation based on cell-sensed pressure to a second edition of our model. Finally, in the third iteration of the model, we add self promotion of proliferation, to introduce a more Turing like nonlinearity.
 
-<li>Secretes and uptakes nothing</li></ul>
-</li>
-</ul>
 
-<h3 id="chemicalcomponents">Chemical components</h3>
+  <p><a name="toc.2"><h1>2&nbsp;Cell Agents</h1>
+    <ul>
+      <li>Cell A - blue</li>
+        <ul>
+          <li>These cells act as the 'inhibitors' in a classical Turing Pattern and are affected by B cell's secretion $\beta$. </li>
+          <li>Uses life cycle model and cycles and commits apoptosis with rates dependent on chemical environment (concentration of $\beta$ as described in Section <a href="#refsec:models">(5)</a>).</li>
+          <li>Motility is enabled with no bias (completely random) and speed determined by chemical environment (concentration of $\beta$ as described in Section <a href="#refsec:models">(5)</a>).</li>
+          <li>A cells secrete $\alpha$ and are affected by $\beta$ but uptake no chemicals.</li>
+    </ul>
 
-<p>Only alpha and beta chemiclas are used in this simulation (no oxygen).  </p>
+    <li>Cell B - yellow</li>
+      <ul>
+        <li>These cells act as activators in the typical Turing Pattern equations and are affected by A cell's secretion $\alpha$.</li>
+        <li>Uses life cycle model and cycles and commits apoptosis with rates dependent on chemical environment (concentration of $\alpha$ as described in Section <a href="#refsec:models">(5)</a>).</li>
+        <li>Motility is enabled with no bias (completely random) and speed determined by chemical environment (concentration of $\alpha$ as described in Section <a href="#refsec:models">(5)</a>).</li>
+        <li>B cells secrete $\beta$ and are effected by $\alpha$ but uptake no chemicals.</li>
+      </ul>
 
-<h3 id="domain">Domain</h3>
+    <li>Wall cells - black</li>
+      <ul>
+        <li>These cells line the domain and prevent the A and B cells from leaving the domain.</li>
+        <li>Uses life cycle model and divides and commits apoptosis with transition rates set to zero (never divide or die).</li>
+        <li>Motility is disabled and cells are set to be immovable.</li>
+        <li>Does not secrete or uptake anything.</li>
+      </ul>
+  </ul>
 
-<p>The domain is initilized to be a 500 um x 500 um with dx=dy=dz=20 um.  The simulations are designed to be run in 2D but could be converted to 3D with ease.  The domain is initiallized with wall cells along the outer perimiter.  The A and B cells are initilized in a couple user defined ways using the <i>placement_pattern</i> XML paramater.  If set to 1 the domain will be competely filled.  If set to 2 it will simulate a sparcer domain that were used to run the simulations.  Anything greater than 2 will make the domain even spacer.  Additionally, <i>placement_pattern</i> can be set to -1 to simulate a few strips that give an interesting pattern and -2 for the same strips but with the cells in the middle half gone. </p>
+  Note that the default values have the two cell types (A and B) set to the same behaivors (same values for all parameters). Exploring parameters of these cell types to produce a Turing like pattern is one of the fun things about this model! Also, exact ideal values are yet to be determined. When additional information becomes available, the default values will be updated.
+
+
+  <p><a name="toc.3"><h1>3&nbsp;Chemical Environment</h1>
+    <ul>
+      <li><strong>Alpha ($\alpha$)</strong> is intended to correlate to the inhibitory chemical.  It is secreted by A cells and affects B cells.  It has a diffusion length scale of 40 <font face=symbol>m</font> m, decay rate of 62.5 min<sup><font face=symbol>-</font>1</sup> and diffusion coefficient of 100,000 (<font face=symbol>m</font> m<sup>2</sup>)/(min).  Alpha acts more like a quorum signal in this model than an inhibitor in the classic Turing Pattern and the A cell, which secretes $\alpha$, is what represent the inhibitory "chemical".  This deviation from the traditional model allows for additional mechanics interactions to play out.</li>
+   
+      <li><strong>Beta ($\beta$)</strong> is intended to correlate to the activator chemical.  It is secreted by B cells and affects A cells.  It has a diffusion length scale of 40 <font face=symbol>m</font> m, decay rate of 62.5 min<sup><font face=symbol>-</font>1</sup> and diffusion coefficient of 100,000 (<font face=symbol>m</font> m<sup>2</sup>)/(min).  Beta also acts more like a quorum signal in this model than an activator in the classic Turing Pattern and the B cell, which secretes $\beta$, is what represent the activator "chemical".</li>
+  
+      <li><strong>Oxygen (O<sub>2</sub>)</strong> is turned off in the simulation and thus has no effect on the cells.</li>
+    </ul>
+
+  Note that the default values have these two chemical fields as equal. Exploring parameters of these two fields that produce a Turing like pattern is one of the fun things about this model! Also, exact ideal values are yet to be determined. When additional information becomes available, the default values will be updated.
+
+
+  <p><a name="toc.4"><h1>4&nbsp;Simulation Initialization</h1>
+
+  Cells are initialized randomly at greater than equilibrium spacing. See Section <a href="#refsec:cell_initializations">(2)</a>
+   for additional information. <br><br>
+
+  Chemical fields are initialized with zero value across the computational domain.<br><br>
+
+  We use no-flux boundary conditions. <br><br>
+
+
+  <p><a name="toc.5"><h1>5&nbsp;Models</h1> <a name="refsec:models">
+
+  There are three different model variants which can be selected.  The models are called in the update_phenotype() method and are selectable using the <i>model_number</i> option in the parameters.  The core of each model is the logistic function. It was selected because it is symmetric about the y-axis and provides rapid change around the midpoint with less dramatic change on the extremes (it is sigmoid).  The logistic function has the form:
+
+  <table style="width:100%">
+    <tr><td style="text-align:center">$l(x) = \frac{L}{1 + e^{-k \cdot (x - x_0)}}$</td><td width="50px">(6)</td></tr>
+  </table>
+   
+  We use it as in Equations <a href="#refeq:log_equation">(7)</a> and <a href="#refeq:one_minus_log_equation">(8)</a>. Equation <a href="#refeq:log_equation">(7)</a>
+   is used for promotion of the base parameter (either cell speed or rate of apoptosis), resulting in a value of P of the particular rate. Equation <a href="#refeq:one_minus_log_equation">(8)</a> works similarly, but decreases the parameter value as the input increases (base proliferation rate). In both cases, we let x<sub>0</sub> equal 0.5, k equal 10, $\overline{b}_r$ be base rates of proliferation, apoptosis, or speed, and finally x is the local value of $\alpha$ or $\beta$ as appropriate. This produces a logistic equation bounded between 0 and 1 and set with inflection point at 0.5. See Figure <a href="#reffig:promoting_logistic_function">(2)</a> and <a href="#reffig:inhibiting_logistic_function">(3)</a> for a graphical representation of the functions. 
+
+  \beq <a name="refeq:log_equation">
+
+  <table style="width:100%">
+    <tr><td style="text-align:center">$P = \overline{b}_r \frac{1}{1 + e^{-k (x - x_0)}}$</td><td width="50px">(7)</td></tr>
+    <tr><td style="text-align:center">$P = \overline{b}_r \biggl (1- \frac{1}{1 + e^{-k (x - x_0)}} \biggr)$</td><td width="50px">(8)</td></tr>
+  </table>
+
+  <div style="text-align: center">
+    <img src="https://github.com/johnmetzcar/spatial_pattern_formation_in_cell_based_models/raw/master/docs/images/our_logistic_function.png" style="height: 400px"><br>
+    <span>Figure (2) Governing logistic function for promotion.</span>
+  </div>
+  <div style="text-align: center">
+    <img src="https://github.com/johnmetzcar/spatial_pattern_formation_in_cell_based_models/raw/master/docs/images/one_minus_our_logistic_function.png" style="height: 400px"><br>
+    <span>Figure (3) Governing logistic function for inhibition.</span>
+  </div>
+
+  <p><a name="toc.5.1"><h2>5.1&nbsp;Model 1</h2> <a name="refsec:Model 1">
+  This was the first model attempted and can be implemented by setting <i>model_number</i> to 1. It simply lets $\overline{b}_r$ equal  $\overline{b}_{proliferation}$, $\overline{b}_{cell speed}$, and $\overline{b}_{proliferation}$ with the resulting cross-inhibition and promotion of A cells by B cells and vice versa. While proliferation is limited somewhat, in this model at the default parameter settings. it is not balanced by apoptosis and the cell count expands without bound.
+
+  <p><a name="toc.5.2"><h2>5.2&nbsp;Model 2</h2> <a name="refsec:Model 2">
+  This model builds on the previous model (Section <a href="#refsec:Model 1">(5.1)</a>) and adds a pressure based control on proliferation. If the cell sensed relative pressure exceeds 0.5, then the rate of proliferation drops to 0. Otherwise, proliferation is governed by Equation <a href="#refeq:log_equation">(7)</a> with $\overline{b}_{proliferation}$ set to the base rate of proliferation.
+
+
+  <p><a name="toc.5.3"><h2>5.3&nbsp;Model 3</h2> <a name="refsec:Model 3">
+  This model builds on the Model 2 (Section <a href="#refsec:Model 2">(5.2)</a>) by retaining the pressure based limit on proliferation and adding another term to the determination of proliferation, based on self-promotion (versus the strict cross-promotion and inhibition of the previous models). <br><br>
+
+  The goal of this model was to make it more Turing-like by having an activator in the function.  The motility and apoptosis are let alone while adding this activator functionality to proliferation.  This is still symmetric between A and B cells but the bias can be set independently.  The equation used for A type cells is  
+
+  $$ \overline{b}_r \biggl (\frac{1}{1 + e^{-k (\alpha - x_0)}} \biggr) \biggl (1 - \frac{1}{1 + e^{-k (\beta - x_0)}} \biggr) $$
+
+  and for B type cells $\alpha$ and $\beta$ are switched.
+
+
+  <p><a name="toc.6"><h1>6&nbsp;Options</h1> <a name="refsec:options">
+  <p><a name="toc.6.1"><h2>6.1&nbsp;Cell initialization</h2> <a name="refsec:cell_initializations">
+
+  There are several initialization all set by entering integer values into the <i>placement_pattern</i> parameter.  Using -1 will create a pattern of 7 horizontal strips similar to the initialization in 5.a in Volkening et al. [7].  If you use -2 then it will use the sample pattern as -1 but with the middle chunk of cells cut out, similar to 9.b in Volkening et al. [7].  The space between cells can additionally be changed using <i>cell_spacing</i> which is 0.95 by default.<br><br>
+
+  Additionally, integer values any number greater than 1 can be entered into <i>placement_pattern</i> which will make the environment saturated with cells, 1, and less saturated as the number gets bigger.  When using this placement pattern you can also set the fraction of cells that will be A type using the <i>cell_frac_A</i> which is set to 0.5 by default.
+
+  <p><a name="toc.6.2"><h2>6.2&nbsp;Model selection</h2> <a name="refsec:model_selection">
+  You can select Model <a href="#refsec:Model 1">(5.1)</a>, <a href="#refsec:Model 2">(5.2)</a> or <a href="#refsec:Model 3">(5.3)</a> by inserting 1, 2 or 3, respectively, into the <i>model_number</i> parameter.
+
+  <h1>References</h1>
+  [1] A. Ghaffarizadeh, R. Heiland, S. H. Friedman, S. M. Mumenthaler, and P. Macklin.
+  Physicell: An open source physics-based cell simulator for 3-d multicellular systems.
+  PLOS Computational Biology, 14(2):1–31, 02 2018. doi: 10.1371/journal.pcbi.1005991.
+  URL https://doi.org/10.1371/journal.pcbi.1005991.<br><br>
+  [2] A. Gierer and H. Meinhardt. A theory of biological pattern formation. Biological Cybernetics,
+  12:30–39, 1972.<br><br>
+  [3] D. Karig, K. M. Martini, T. Lu, N. A. DeLateur, N. Goldenfeld, and R. Weiss. Stochastic
+  Turing patterns in a synthetic bacterial population. Proceedings of the National Academy
+  of Sciences, 115(26):6572–6577, June 2018. ISSN 0027-8424, 1091-6490. doi: 10.1073/
+  pnas.1720770115.<br><br>
+  [4] S. Kondo. Turing pattern formation without diffusion. In How the world computes, pages
+  416–421. Springer, 2012.<br><br>
+  [5] J. D. Murray. Mathematical Biology II: Spatial Models and Biomedical Applications,
+  volume 2. Third edition edition.<br><br>
+  [6] A. Turing. The Chemical Basis of Morphogenesis. Philosophical Transactions of the
+  Royal Society of London. Series B, BiologicalSciences, 237(641):37–72, 1952.<br><br>
+  [7] A. Volkening and B. Sandstede. Modelling stripe formation in zebrafish: An agent-based
+  approach. Journal of The Royal Society Interface, 12(112):20150812, Nov. 2015. ISSN
+  1742-5689, 1742-5662. doi: 10.1098/rsif.2015.0812.<br><br>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
